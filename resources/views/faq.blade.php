@@ -60,10 +60,38 @@
     </head>
 
     <body class="bg-[url('../../public/images/fondoDark.png')] dark:bg-[url('../../public/images/fondoLight.png')] bg-cover bg-no-repeat bg-center md:bg-left text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
-        
-        
+        <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
+                <nav class="flex items-center justify-start gap-4">
+                    <a
+                        href="{{ url('/') }}"
+                        class="inline-block px-5 py-1.5 dark:text-[#ef4848] border-[#ef4848] hover:border-[#ef4848] border text-[#ef4848] dark:border-[#ef4848] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"
+                    >
+                        Inicio
+                    </a>
+                </nav>
+        </header>
         <p class="text-2xl text-[#ef4848] font-bold text-center mb-5 mt-10  md:px-[76px] px-[50px]">¿Cómo puedes participar en un sorteo?</p>
         <div class="flex flex-col md:flex-row gap-4 w-full max-w-6xl mx-auto  md:px-[76px] px-[50px]">
+            <flux:accordion exclusive>
+                <flux:accordion.item>
+                    <flux:accordion.heading>What's your refund policy?</flux:accordion.heading>
+                    <flux:accordion.content>
+                        If you are not satisfied with your purchase, we offer a 30-day money-back guarantee. Please contact our support team for assistance.
+                    </flux:accordion.content>
+                </flux:accordion.item>
+                <flux:accordion.item>
+                    <flux:accordion.heading>Do you offer any discounts for bulk purchases?</flux:accordion.heading>
+                    <flux:accordion.content>
+                        Yes, we offer special discounts for bulk orders. Please reach out to our sales team with your requirements.
+                    </flux:accordion.content>
+                </flux:accordion.item>
+                <flux:accordion.item>
+                    <flux:accordion.heading>How do I track my order?</flux:accordion.heading>
+                    <flux:accordion.content>
+                        Once your order is shipped, you will receive an email with a tracking number. Use this number to track your order on our website.
+                    </flux:accordion.content>
+                </flux:accordion.item>
+            </flux:accordion>
             <div class="w-full md:w-1/3 p-6 bg-white rounded-lg shadow-md flex flex-col items-center justify-center text-center">
                 <!-- <h2 class="text-xl font-semibold text-gray-800 mb-2">Escoge la cantidad </h2> -->
                 <p class="text-gray-600 font-medium">Escoge la cantidad de tickets que deseas comprar. Puedes escoger los que quieras 😱</p>

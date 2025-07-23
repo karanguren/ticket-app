@@ -3,9 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+use App\Http\Controllers\PaymentController;
+
+Route::get('/', [PaymentController::class, 'showPaymentOptions'])->name('welcome');
+
+// Route::get('/', function () {
+//     return view('welcome');
+// })->name('home');
 
 Route::get('/faq', function () {
     return view('faq');
@@ -22,5 +26,9 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
+
+Route::get('/pp', function () {
+    return view('emails/tickets');
+})->name('tickets');
 
 require __DIR__.'/auth.php';
