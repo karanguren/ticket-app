@@ -2,29 +2,53 @@ document.addEventListener("DOMContentLoaded", function () {
     var modal = document.getElementById("Modal");
     var closeButton = document.getElementById("closeModalBtn");
 
-    const openTicketVerifierModalBtn = document.getElementById('openTicketVerifierModalBtn');
-    const closeTicketVerifierModalBtn = document.getElementById('closeTicketVerifierModalBtn');
+    const openTicketVerifierModalBtn = document.getElementById(
+        "openTicketVerifierModalBtn"
+    );
+
+    const closeTicketVerifierModalBtn = document.getElementById(
+        "closeTicketVerifierModalBtn"
+    );
+
+    const openConfirmPaymentModalBtn = document.getElementById(
+        "openConfirmPaymentModalBtn"
+    );
+    const closeConfirmPaymentModalBtn = document.getElementById(
+        "closeConfirmPaymentModalBtn"
+    );
 
     if (openTicketVerifierModalBtn) {
-        openTicketVerifierModalBtn.addEventListener('click', showTicketVerifierModal);
+        openTicketVerifierModalBtn.addEventListener(
+            "click",
+            showTicketVerifierModal
+        );
     }
 
     // Event listener para el botón de cerrar del modal de verificación de tickets
     if (closeTicketVerifierModalBtn) {
-        closeTicketVerifierModalBtn.addEventListener('click', hideTicketVerifierModal);
+        closeTicketVerifierModalBtn.addEventListener(
+            "click",
+            hideTicketVerifierModal
+        );
     }
+
     // Opcional: Cerrar el modal de verificación de tickets haciendo clic fuera de él
-    const ticketVerifierModal = document.getElementById('ticketVerifierModal');
-    if (ticketVerifierModal) { 
-        ticketVerifierModal.addEventListener('click', function(event) {
+    const ticketVerifierModal = document.getElementById("ticketVerifierModal");
+    if (ticketVerifierModal) {
+        ticketVerifierModal.addEventListener("click", function (event) {
             if (event.target === ticketVerifierModal) {
                 hideTicketVerifierModal();
             }
         });
     }
+
     // Opcional: Cerrar el modal de verificación de tickets con la tecla ESC
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && ticketVerifierModal && !ticketVerifierModal.classList.contains('hidden')) {
+    document.addEventListener("keydown", function (event) {
+        if (
+            event.key === "Escape" &&
+            ticketVerifierModal &&
+            !ticketVerifierModal.classList.contains("hidden")
+        ) {
             hideTicketVerifierModal();
         }
     });
@@ -41,6 +65,46 @@ document.addEventListener("DOMContentLoaded", function () {
     modal.addEventListener("click", function (event) {
         if (event.target === modal) {
             modal.classList.add("hidden");
+        }
+    });
+
+    function showConfirmPaymentModal() {
+        const modal = document.getElementById("confirmPaymentModal");
+        if (modal) {
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        }
+    }
+
+    function hideConfirmPaymentModal() {
+        const modal = document.getElementById("confirmPaymentModal");
+        if (modal) {
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+    }
+
+    if (openConfirmPaymentModalBtn) {
+        openConfirmPaymentModalBtn.addEventListener('click', showConfirmPaymentModal);
+    }
+
+    // Event listener para el botón de cerrar del modal de confirmación de pago
+    if (closeConfirmPaymentModalBtn) {
+        closeConfirmPaymentModalBtn.addEventListener('click', hideConfirmPaymentModal);
+    }
+    // Opcional: Cerrar el modal de confirmación de pago haciendo clic fuera de él
+    const confirmPaymentModal = document.getElementById('confirmPaymentModal');
+    if (confirmPaymentModal) { 
+        confirmPaymentModal.addEventListener('click', function(event) {
+            if (event.target === confirmPaymentModal) {
+                hideConfirmPaymentModal();
+            }
+        });
+    }
+    // Opcional: Cerrar el modal de confirmación de pago con la tecla ESC
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && confirmPaymentModal && !confirmPaymentModal.classList.contains('hidden')) {
+            hideConfirmPaymentModal();
         }
     });
 });
@@ -212,5 +276,3 @@ function hideTicketVerifierModal() {
         modal.classList.remove("flex");
     }
 }
-
-

@@ -192,7 +192,15 @@
             </div>
 
             <div class="w-full md:w-1/2 p-4 flex flex-col items-center">
-                <p class="text-2xl text-white font-bold">Confirma tu pago</p>
+                <button id="openConfirmPaymentModalBtn" 
+                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105
+                           flex items-center justify-center space-x-2 mb-8">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>Confirmar Pago</span>
+            </button>
+                <!-- <p class="text-2xl text-white font-bold">Confirma tu pago</p>
                 <div class="w-90 mb-24">
                     <flux:label class="text-white">Nombre</flux:label>
                     <flux:input 
@@ -242,7 +250,7 @@
                         required
                     />
                     <flux:button class="mt-5" variant="danger" icon="arrow-down-tray"> CONFIRMAR PAGO </flux:button>
-                </div>
+                </div> -->
                 <flux:callout class="w-3/4" icon="exclamation-triangle" color="red" inline>
                     <flux:callout.heading>IMPORTANTE</flux:callout.heading>
                     <flux:callout.text>Si en 24 horas no te llegan tus Números al correo, por favor escribe a Soporte no antes.</flux:callout.text>
@@ -252,17 +260,8 @@
                 </flux:callout>
             </div>
         </div>
-
-        <!-- <div>
-            <a
-                href="{{ route('faq') }}"
-                class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
-            >
-                Log in
-            </a>
-        </div> -->
         
-
+        <!-- terminos y condiciones -->
         <div id="Modal" class="fixed inset-0 bg-[#1b1b18ad] overflow-y-auto h-full w-full flex items-center justify-center hidden top-0">
             <div class="relative p-5 border max-w-3xl w-full shadow-lg rounded-md bg-white">
                 <div class="mt-3 text-center">
@@ -289,29 +288,94 @@
                 </div>
             </div>
         </div>
-
+        <!-- Verificacion de tickets -->
         <div id="ticketVerifierModal" class="fixed inset-0 bg-[#1b1b18ad] overflow-y-auto h-full w-full flex items-center justify-center hidden top-0 z-50">
-        <div class="relative p-5 border max-w-md w-full shadow-lg rounded-md bg-white">
-            <div class="mt-3 text-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Verificar Tickets</h3>
-                <div class="mt-2 px-7 py-3">
-                    <p class="text-sm text-gray-500 mb-4">
-                        Ingresa el número de tu ticket o tu cédula para verificar si eres ganador.
-                    </p>
-                    <input type="text" placeholder="Número de Ticket o Cédula" 
-                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4">
-                    <button class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-                        Verificar
-                    </button>
-                </div>
-                <div class="items-center px-4 py-3">
-                    <button id="closeTicketVerifierModalBtn" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-36 shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
-                        Cerrar
-                    </button>
+            <div class="relative p-5 border max-w-md w-full shadow-lg rounded-md bg-white">
+                <div class="mt-3 text-center">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Verificar Tickets</h3>
+                    <div class="mt-2 px-7 py-3">
+                        <p class="text-sm text-gray-500 mb-4">
+                            Ingresa el número de tu ticket.
+                        </p>
+                        <input type="text" placeholder="Número de Cédula" 
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4">
+                        <button class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                            Verificar
+                        </button>
+                    </div>
+                    <div class="items-center px-4 py-3">
+                        <button id="closeTicketVerifierModalBtn" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-36 shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                            Cerrar
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        <!-- Confirmacion de pago -->
+        <div id="confirmPaymentModal" class="fixed inset-0 bg-[#1b1b18ad] overflow-y-auto h-full w-full flex items-center justify-center hidden top-0 z-60">
+            <div class="relative p-5 border max-w-lg w-full shadow-lg rounded-md bg-white">
+                <div class="mt-3">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Confirma tu pago</h3>
+                    <div class="mt-2 px-7 py-3">
+                        <div class="w-full"> {{-- Ajustado a w-full para el formulario --}}
+                            <flux:label class="text-gray-700">Nombre</flux:label>
+                            <flux:input 
+                                placeholder="Nombre"
+                                type="text"
+                                required
+                                class="mb-4"
+                            />
+                            <flux:label class="text-gray-700">Cédula</flux:label>
+                            <flux:input 
+                                placeholder="Cédula"
+                                type="text"
+                                required
+                                class="mb-4"
+                            />
+                            <flux:label class="text-gray-700">Teléfono</flux:label>
+                            <flux:input 
+                                type="phone"
+                                mask="(999)999-9999"
+                                placeholder="Teléfono"
+                                required
+                                class="mb-4"
+                            />
+                            <flux:label class="text-gray-700">Correo</flux:label>
+                            <flux:input
+                                wire:model="email"
+                                type="email"
+                                required
+                                autocomplete="email"
+                                placeholder="email@example.com"
+                                class="mb-4"
+                            />
+                            <flux:label class="text-gray-700">Nro. de Referencia (ultimos 4)</flux:label>
+                            <flux:input
+                                wire:model="ref"
+                                type="text"
+                                required
+                                placeholder="Nro. de Referencia"
+                                class="mb-4"
+                                
+                            />
+                            <flux:label class="text-gray-700">Capture de pago</flux:label>
+                            <flux:input 
+                                type="file" 
+                                wire:model="logo" 
+                                placeholder="Captura de pago"
+                                required
+                            />
+                            <flux:button class="mt-5" variant="danger" icon="arrow-down-tray"> CONFIRMAR PAGO </flux:button>
+                        </div>
+                    </div>
+                    <div class="items-center px-4 py-3">
+                        <button id="closeConfirmPaymentModalBtn" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-36 shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script>
             window.totalFromLaravel = "{{ $totalAPagar ?? '0.00' }}"; 
         </script>

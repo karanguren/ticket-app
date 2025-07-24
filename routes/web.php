@@ -31,4 +31,8 @@ Route::get('/pp', function () {
     return view('emails/tickets');
 })->name('tickets');
 
+Route::get('/kk', function () {
+    return view('numeros');
+});
+
 require __DIR__.'/auth.php';
