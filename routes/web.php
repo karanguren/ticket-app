@@ -5,11 +5,11 @@ use Livewire\Volt\Volt;
 
 use App\Http\Controllers\PaymentController;
 
-Route::get('/', [PaymentController::class, 'showPaymentOptions'])->name('welcome');
+// Route::get('/', [PaymentController::class, 'showPaymentOptions'])->name('welcome');
 
-// Route::get('/', function () {
-//     return view('welcome');
-// })->name('home');
+Route::get('/', function () {
+    return view('welcome');
+})->name('welcome');
 
 Route::get('/faq', function () {
     return view('faq');
@@ -33,6 +33,15 @@ Route::get('/pp', function () {
 
 Route::get('/kk', function () {
     return view('numeros');
+});
+
+Route::get('/list', function () {
+    return view('.ticketsList');
+})->name('ticketsList');
+
+Route::get('/test-payments', function () {
+    // Pasa un total ficticio para la prueba
+    return view('test-payments-view', ['totalAmount' => '99.99']);
 });
 
 require __DIR__.'/auth.php';
