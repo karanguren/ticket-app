@@ -27,7 +27,7 @@
         </p>
         <p style="text-align: justify; margin-left: 20px;">
             Para cualquier consulta o asistencia adicional que necesite, puede comunicarse las 24
-            horas del dia con nuestro equipo a traves de piedyccs@gmail.com
+            horas del dia con nuestro equipo a traves de rifas@gmail.com
         </p>
     </div>
 

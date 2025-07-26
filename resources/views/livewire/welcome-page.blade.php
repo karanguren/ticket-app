@@ -108,17 +108,17 @@
 
             <div class="w-full md:w-1/2 p-4 flex flex-col items-center">
                 <div class="flex flex-wrap justify-center w-full gap-4 mb-4">
-                    <button id="openConfirmPaymentModalBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 mb-8">
+                    <button wire:click="$dispatch('open-confirm-payment-modal')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 mb-8">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span>Confirmar Pago</span>
+                        Confirmar Pago
                     </button>
-                    <button id="openTicketVerifierModalBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 mb-8">
+                    <button wire:click="$dispatch('open-ticket-verifier-modal')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 mb-8">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span>Verificar Tickets</span>
+                        Verificar Tickets
                     </button>
                 </div>
                 <flux:callout class="w-3/4" icon="exclamation-triangle" color="red" inline>
@@ -132,40 +132,16 @@
         </div>
         
         <!-- terminos y condiciones -->
-        <div id="Modal" class="fixed inset-0 bg-[#1b1b18ad] overflow-y-auto h-full w-full flex items-center justify-center hidden top-0">
-            <div class="relative p-5 border max-w-3xl w-full shadow-lg rounded-md bg-white">
-                <div class="mt-3 text-center">
-                    <h3 class="text-lg leading-6 font-medium text-red-900">¡Bienvenido!</h3>
-                    <div class="mt-2 px-7 py-3">
-                        <p class="text-sm text-gray-500 text-justify">
-                            1. Los números disponibles a comprar de cada una de nuestras rifas serán descritos en la página de detalles de las mismas.
-                            <br>
-                            <br>
-                            2. Solo pueden participar personas naturales mayores de 18 años.
-                            <br>
-                            <br>
-                            3. Los premios deben ser retirados personalmente en el lugar indicado en cada rifa, entregaremos personalmente solamente en la dirección indicada por el ganador del primer premio o premio mayor.
-                            <br>
-                            <br>
-                            4. Los ganadores deberán aceptar que Rifas Los Hermanos difunda en todas sus redes sociales fotografías y videos con la presencia de los ganadores luego de haber sido entregados los premios.
-                        </p>
-                    </div>
-                    <div class="items-center px-4 py-3">
-                        <button id="closeModalBtn" class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-36 shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            Cerrar
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @livewire('generic-modal')
         <!-- Verificacion de tickets -->
-        <div id="ticketVerifierModal" class="fixed inset-0 bg-[#1b1b18ad] overflow-y-auto h-full w-full flex items-center justify-center hidden top-0 z-50">
+         @livewire('ticket-verifier-modal')
+        <!-- <div id="ticketVerifierModal" class="fixed inset-0 bg-[#1b1b18ad] overflow-y-auto h-full w-full flex items-center justify-center hidden top-0 z-50">
             <div class="relative p-5 border max-w-md w-full shadow-lg rounded-md bg-white">
                 <div class="mt-3 text-center">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">Verificar Tickets</h3>
                     <div class="mt-2 px-7 py-3">
                         <p class="text-sm text-gray-500 mb-4">
-                            Ingresa el número de tu ticket.
+                            Ingresa tu numero de cedula.
                         </p>
                         <input type="text" placeholder="Número de Cédula" 
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4">
@@ -180,72 +156,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <!-- Confirmacion de pago -->
-        <div id="confirmPaymentModal" class="fixed inset-0 bg-[#1b1b18ad] overflow-y-auto h-full w-full flex items-center justify-center hidden top-0 z-60">
-            <div class="relative p-5 border max-w-lg w-full shadow-lg rounded-md bg-white">
-                <div class="mt-3">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">Notifica tu pago</h3>
-                    <div class="mt-2 px-7 py-3">
-                        <div class="w-full">
-                            <flux:label class="text-gray-700">Nombre</flux:label>
-                            <flux:input 
-                                placeholder="Nombre"
-                                type="text"
-                                required
-                                class="mb-4"
-                            />
-                            <flux:label class="text-gray-700">Cédula</flux:label>
-                            <flux:input 
-                                placeholder="Cédula"
-                                type="text"
-                                required
-                                class="mb-4"
-                            />
-                            <flux:label class="text-gray-700">Teléfono</flux:label>
-                            <flux:input 
-                                type="phone"
-                                mask="(999)999-9999"
-                                placeholder="Teléfono"
-                                required
-                                class="mb-4"
-                            />
-                            <flux:label class="text-gray-700">Correo</flux:label>
-                            <flux:input
-                                wire:model="email"
-                                type="email"
-                                required
-                                autocomplete="email"
-                                placeholder="email@example.com"
-                                class="mb-4"
-                            />
-                            <flux:label class="text-gray-700">Nro. de Referencia (ultimos 4)</flux:label>
-                            <flux:input
-                                wire:model="ref"
-                                type="text"
-                                required
-                                placeholder="Nro. de Referencia"
-                                class="mb-4"
-                                
-                            />
-                            <flux:label class="text-gray-700">Capture de pago</flux:label>
-                            <flux:input 
-                                type="file" 
-                                wire:model="logo" 
-                                placeholder="Captura de pago"
-                                required
-                            />
-                            <flux:button class="mt-5" variant="danger" icon="arrow-up-right"> COMPAR TICKETS </flux:button>
-                        </div>
-                    </div>
-                    <div class="items-center px-4 py-3">
-                        <button id="closeConfirmPaymentModalBtn" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-36 shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
-                            Cerrar
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @livewire('confirm-payment-modal')
+
         @vite('resources/js/app.js') 
     </body>
 </html>
