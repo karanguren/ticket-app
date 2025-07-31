@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Models\GeneratedTicket;
 
 class TicketVerifierModal extends Component
 {
@@ -32,21 +33,10 @@ class TicketVerifierModal extends Component
             'cedula' => 'required|string|max:20', 
         ]);
 
-        
-        // $this->foundTickets = Ticket::whereHas('user', function ($query) {
-        //     $query->where('cedula', $this->cedula);
-        // })->pluck('ticket_number')->toArray();
-        //
-        // $this->foundTickets = Ticket::where('cedula_of_buyer', $this->cedula)->pluck('ticket_number')->toArray();
+        $this->foundTickets = GeneratedTicket::where('cedula', $this->cedula)
+                                            ->pluck('ticket_number')
+                                            ->toArray();
 
-        
-        $dummyTickets = [
-            '12345678' => ['101', '102', '105', '200'],
-            '98765432' => ['300', '301'],
-            '17718709' => ['123', '456', '789'], 
-        ];
-
-        $this->foundTickets = $dummyTickets[$this->cedula] ?? [];
         $this->searchPerformed = true; 
     }
 

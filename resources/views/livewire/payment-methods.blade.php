@@ -22,5 +22,18 @@
             </div>
         </div>
     </div>
+    @if ($showPaymentInfo && (float)$totalAmount > 0 && $numberOfTicketsForConfirmation > 0)
+            <div class="flex justify-center">
+                <button
+                    wire:click="openConfirmPaymentModalButton"
+                    class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105 flex items-center justify-center space-x-2"
+                >
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Confirmar Pago
+                </button>
+            </div>
+        @endif
 </div>
 

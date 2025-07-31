@@ -12,16 +12,28 @@ class PaymentMethods extends Component
     public $paymentContent = '';
     public $activeButton = null;
 
+    // --- NUEVA PROPIEDAD PARA RECIBIR LA CANTIDAD DE TICKETS ---
+    public $numberOfTicketsForConfirmation = 0; // Inicializamos a 0
+
+    // Modificamos el listener 'updatePaymentTotalAmount' para que también reciba la cantidad de tickets
+    // El nombre del listener será el mismo para no romper la comunicación con BuyTickets.
+    // BuyTickets despacha 'updatePaymentTotalAmount' con $this->totalAmount y $this->ticketQuantity
     protected $listeners = ['updatePaymentTotalAmount' => 'setTotalAmount'];
 
-    public function mount($totalAmount)
+    // El mount ahora acepta un parámetro adicional para la cantidad de tickets
+    public function mount($totalAmount, $numberOfTickets = 0) // Añadimos $numberOfTickets con un default
     {
         $this->totalAmount = $totalAmount;
+        $this->numberOfTicketsForConfirmation = $numberOfTickets; // Asignamos la cantidad de tickets
     }
 
-    public function setTotalAmount($newTotal)
+    // Modificamos setTotalAmount para que acepte y guarde la cantidad de tickets
+    public function setTotalAmount($newTotal, $newNumberOfTickets = 0) // Acepta la cantidad de tickets
     {
         $this->totalAmount = $newTotal;
+        $this->numberOfTicketsForConfirmation = $newNumberOfTickets; // Guardamos la nueva cantidad de tickets
+
+        // Mantenemos tu lógica existente para actualizar el contenido del pago
         if ($this->showPaymentInfo && $this->activeButton) {
             $this->paymentContent = $this->generatePaymentHtml($this->activeButton);
         }
@@ -99,6 +111,16 @@ class PaymentMethods extends Component
             $this->showPaymentInfo = true;
             $this->paymentContent = $this->generatePaymentHtml($method);
         }
+    }
+
+    // --- NUEVO MÉTODO PARA ABRIR EL MODAL DE CONFIRMACIÓN DE PAGO ---
+    // Este método es llamado por el botón que quieres agregar.
+    public function openConfirmPaymentModalButton()
+    {
+        // Despachamos el evento al ConfirmPaymentModal con los datos que hemos recibido
+        // Asegúrate de que ConfirmPaymentModal.php tenga un método openModal($amount, $ticketsCount)
+        $this->dispatch('open-confirm-payment-modal', (float) $this->totalAmount, $this->numberOfTicketsForConfirmation);
+        // Usamos (float) para asegurar que el totalAmount se pase como número.
     }
 
     public function render()

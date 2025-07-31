@@ -13,8 +13,18 @@
                     </button>
                 </div>
 
-                @if ($totalAmount)
-                    <p class="text-xl font-bold text-green-600 text-center my-4">Monto a confirmar: Bs. {{ $totalAmount }}</p>
+                @if ($totalAmount && $numberOfTickets)
+                    <p class="text-xl font-bold text-green-600 text-center my-4">
+                        Monto a confirmar: Bs. {{ number_format($totalAmount, 2, ',', '.') }}
+                    </p>
+                    <p class="text-lg font-semibold text-gray-800 text-center mb-4">
+                        Cantidad de Tickets: {{ $numberOfTickets }}
+                    </p>
+                @elseif ($totalAmount)
+                    {{-- Si solo el monto está disponible (como antes) --}}
+                    <p class="text-xl font-bold text-green-600 text-center my-4">
+                        Monto a confirmar: Bs. {{ number_format($totalAmount, 2, ',', '.') }}
+                    </p>
                 @endif
 
                 @if (session()->has('message'))

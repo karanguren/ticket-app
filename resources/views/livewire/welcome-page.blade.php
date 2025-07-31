@@ -109,13 +109,17 @@
         <div class="flex flex-col md:flex-row items-center md:px-[76px] px-[50px] gap-8 md:h-screen w-full p-[40px]">
             @livewire('buy-tickets')
             <div class="w-full md:w-1/2 p-4 flex flex-col items-center">
+                <div class="w-3/5 bg-gray-200 rounded-full dark:bg-gray-700 mx-8">
+                    <div class="bg-red-600 text-xs font-medium text-red-100 text-center p-0.5 leading-none rounded-full" style="width: 45%"> 45%</div>
+                </div>
+                <strong class="text-white text-[12px] mt-3 mb-3">0.00% del objetivo alcanzado</strong>
                 <div class="flex flex-wrap justify-center w-full gap-4 mb-4">
-                    <button wire:click="$dispatch('open-confirm-payment-modal')" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 mb-8">
+                    <!-- <button wire:click="$dispatch('open-confirm-payment-modal')" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 mb-8">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         Confirmar Pago
-                    </button>
+                    </button> -->
                     <button wire:click="$dispatch('open-ticket-verifier-modal')" class="bg-white hover:bg-white text-[#ef4848] font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 mb-8">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>

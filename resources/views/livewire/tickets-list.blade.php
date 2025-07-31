@@ -1,13 +1,15 @@
-<div>
+ <div>
+   
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 bg-gray-100 min-h-screen">
         <span class="flex items-center mb-8">
             <span class="h-px flex-1 bg-gray-300"></span>
 
-            <span class="shrink-0 px-4 text-3xl font-bold text-gray-800 text-center">Gestión de Notificaciones de Pago</span>
+            <span class="shrink-0 px-4 text-3xl font-bold text-red-800 text-center">Gestión de Notificaciones de Pago</span>
 
             <span class="h-px flex-1 bg-gray-300"></span>
         </span>
-
+    
+        {{-- Mensajes de sesión --}}
         @if (session()->has('message'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                 <span class="block sm:inline">{{ session('message') }}</span>
@@ -23,7 +25,7 @@
                 <span class="block sm:inline">{{ session('error') }}</span>
             </div>
         @endif
-
+    
         {{-- Controles de Filtro y Búsqueda --}}
         <div class="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <input
@@ -32,17 +34,17 @@
                 placeholder="Buscar por nombre, cédula, correo o referencia..."
                 class="w-full sm:w-2/3 md:w-1/2 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             >
-
+    
             <select
                 wire:model.live="filterConfirmed"
                 class="w-full sm:w-1/3 md:w-1/4 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             >
-                <option value="false">Pendientes</option>
-                <option value="true">Confirmados</option>
-                <option value="all">Todos</option>
+                <option value="false">Solo Pendientes</option>
+                <option value="true">Solo Confirmados</option>
+                <option value="all">Mostrar Todos</option>
             </select>
         </div>
-
+    
         {{-- Tabla de Notificaciones --}}
         <div class="bg-white shadow-md rounded-lg overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
@@ -63,25 +65,37 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse ($notifications as $notification)
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification['name'] }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification['cedula'] }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification['email'] }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification['phone'] }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification['reference_number'] }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification->name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification->cedula }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification->email }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification->phone }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification->reference_number }}</td>
+                            {{-- Lógica para mostrar Bs. o $ --}}
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            @php
-                                $currencySymbol = 'Bs.';
-                                if (in_array($notification['payment_method'], ['Zelle', 'Binance', 'Zinli'])) {
-                                    $currencySymbol = '$';
-                                }
-                            @endphp
-                            {{ $currencySymbol }} {{ number_format($notification['amount'], 2, ',', '.') }}
-                        </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification['payment_method'] ?? 'N/A' }}</td>
+                                @php
+                                    $currencySymbol = 'Bs.';
+                                    // El método de pago no está en PaymentNotification.
+                                    // Si quieres diferenciar por moneda, necesitarás añadir 'currency_type'
+                                    // o 'payment_method' a la tabla PaymentNotification.
+                                    // Por ahora, asumimos Bs. si no hay un campo específico.
+                                    // O si tienes una lógica para inferir, úsala aquí.
+                                    // Ejemplo si hubieras añadido 'payment_method' a PaymentNotification:
+                                    // if (in_array($notification->payment_method, ['Zelle', 'Binance', 'Zinli'])) {
+                                    //     $currencySymbol = '$';
+                                    // }
+                                @endphp
+                                {{ $currencySymbol }} {{ number_format($notification->amount, 2, ',', '.') }}
+                            </td>
+                            {{-- Si tienes el método de pago en PaymentNotification, muestra esto: --}}
+                            {{-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification->payment_method ?? 'N/A' }}</td> --}}
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">N/A</td> {{-- Temporalmente N/A si no está en la BD --}}
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                @if ($notification['is_confirmed'] && !empty($notification['tickets']))
+                                @if ($notification->is_confirmed && $notification->tickets)
+                                    @php
+                                        $decodedTickets = json_decode($notification->tickets, true);
+                                    @endphp
                                     <div class="flex flex-wrap gap-1">
-                                        @foreach ($notification['tickets'] as $ticket)
+                                        @foreach ($decodedTickets as $ticket)
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                                 {{ $ticket }}
                                             </span>
@@ -92,9 +106,9 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                @if ($notification['is_confirmed'])
+                                @if ($notification->is_confirmed)
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Confirmado</span>
-                                    <p class="text-xs text-gray-500 mt-1">{{ \Carbon\Carbon::parse($notification['confirmed_at'])?->diffForHumans() }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ \Carbon\Carbon::parse($notification->confirmed_at)?->diffForHumans() }}</p>
                                 @else
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pendiente</span>
                                 @endif
@@ -116,7 +130,7 @@
 
                                 @if ($notification['is_confirmed'] && !empty($notification['tickets']))
                                     <button
-                                        wire:click="sendWhatsApp({{ $notification['id'] }})"
+                                        wire:click="sendWhatsApp({{ $notification->id }})"
                                         wire:loading.attr="disabled"
                                         class="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 mr-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                                     >
@@ -139,12 +153,12 @@
                 </tbody>
             </table>
         </div>
-
+    
         {{-- Paginación --}}
         <div class="mt-4">
             {{ $notifications->links() }}
         </div>
-
+    
         @if ($showConfirmModal)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-[#000000b5] bg-opacity-50 p-4" x-cloak>
             <div class="bg-white rounded-lg shadow-xl w-full max-w-sm mx-auto p-6">
@@ -172,4 +186,7 @@
         </div>
     @endif
     </div>
-</div>
+</div> 
+
+
+

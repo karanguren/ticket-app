@@ -1,12 +1,7 @@
     
 <div class="w-full md:w-1/2 p-4 flex flex-col items-center h-full">
     <p class="text-2xl text-[#ef4848] font-bold text-center mb-8">Compra aquí tus tickets 🎟️</p>
-    <flux:badge color="red" size="lg" class="text-white mb-8">Valor Ticket: {{ $ticketPrice }}Bs</flux:badge>
-
-    <div class="w-3/5 bg-gray-200 rounded-full dark:bg-gray-700 mx-8">
-        <div class="bg-red-600 text-xs font-medium text-red-100 text-center p-0.5 leading-none rounded-full" style="width: 45%"> 45%</div>
-    </div>
-    <strong class="text-white text-[12px] mt-3 mb-3">0.00% del objetivo alcanzado</strong>
+    <flux:badge color="red" size="lg" class="text-white mb-5">Valor Ticket: {{ $ticketPrice }}Bs</flux:badge>
 
     <div class="md:flex md:items-center mb-6">
         <div class="md:w-1/3">
