@@ -1,4 +1,3 @@
-{{-- resources/views/welcome.blade.php --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -57,7 +56,7 @@
         </div>
         <div class="left-[20px] fixed bottom-[20px] px-[15px] py-[10px] text-sm bg-transparent">
             <div class="text-center flex flex-col justify-center">
-                <a href="https://api.whatsapp.com/send?phone=+584143669987&text=Hola!" target="_blank" class="mb-[20px] ml-[0px] w-[23px]">
+                <a href="https://api.whatsapp.com/send?phone=584143669987&text=%C2%A1Hola!%20%F0%9F%91%8B%0A%0ATengo%20una%20consulta..." target="_blank" class="mb-[20px] ml-[0px] w-[23px]">
                     <img src="{{asset('images/whatsapp.png')}}" style="width: 100%">
                 </a>
                 </a>

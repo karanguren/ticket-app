@@ -1,11 +1,11 @@
 <div>
     <div id="ticketVerifierModal" class="fixed inset-0 z-50 {{ $showModal ? 'flex' : 'hidden' }} items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black opacity-50" wire:click="closeModal"></div>
         <div class="relative p-5 border max-w-md w-full shadow-lg rounded-md bg-white">
-            <div class="mt-3 text-center">
+            <div class="mt-3">
                 <div class="flex justify-between items-center mb-4 px-7"> 
-                    <h3 class="text-lg leading-6 font-medium text-[#ef4848]">Verificar Tickets</h3>
-                    {{-- Botón de cerrar con ícono de 'X' --}}
-                    <button wire:click="closeModal" type="button" class="text-red-400 hover:text-red-600 focus:outline-none">
+                    <h3 class="text-2xl text-[#ef4848] font-bold leading-6">Verificar Tickets</h3>
+                    <button wire:click="closeModal" type="button" class="text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
@@ -24,10 +24,11 @@
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
                         >
                         @error('cedula') <span class="text-red-500 text-sm block mb-4">{{ $message }}</span> @enderror
-
-                        <button type="submit" class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-                            Verificar
-                        </button>
+                        <div class="flex justify-end">
+                            <button type="submit" class="cursor-pointer px-6 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                                Verificar
+                            </button>
+                        </div>
                     </form>
 
                     @if ($searchPerformed)
@@ -50,11 +51,11 @@
                     @endif
                 </div>
 
-                <div class="items-center px-4 py-3 mt-4"> 
-                    <button wire:click="closeModal" type="button" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-36 shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                <!-- <div class="items-center px-4 py-3 mt-4"> 
+                    <button wire:click="closeModal" type="button" class="cursor-pointer px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-36 shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
                         Cerrar
                     </button>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

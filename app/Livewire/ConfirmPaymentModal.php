@@ -25,15 +25,10 @@ class ConfirmPaymentModal extends Component
         'updateConfirmPaymentTotal' => 'updateTotalAmount', 
     ];
 
-    public function openConfirmPaymentModal()
-{
-    $this->dispatch('open-confirm-payment-modal');
-    $this->dispatch('updateConfirmPaymentTotal', $this->totalAmount);
-}
-
     public function openModal()
     {
         $this->showModal = true;
+        $this->resetForm(); 
     }
 
     public function closeModal()

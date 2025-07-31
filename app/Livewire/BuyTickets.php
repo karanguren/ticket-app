@@ -6,42 +6,46 @@ use Livewire\Component;
 
 class BuyTickets extends Component
 {
-    public $ticketQuantity = 2;
-    public $ticketPrice = 30.00;
+    public $ticketQuantity = 0; 
+    public $ticketPrice = 60.00;
     public $totalAmount = '0.00';
 
     public function mount()
     {
-        $this->ticketQuantity = max(2, $this->ticketQuantity);
-        $this->updateTotalAmount();
+        
+        $this->updateTotalAmount(); 
     }
 
     public function updatedTicketQuantity($value)
     {
-        $value = (int) $value;
+        $cleanValue = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
+        $cleanValue = (int) $cleanValue;
 
-        if ($value < 2) {
+       
+        if ($cleanValue < 2 && $cleanValue !== 0) { 
             $this->ticketQuantity = 2;
-        } elseif ($value > 100) {
+        } elseif ($cleanValue > 100) {
             $this->ticketQuantity = 100;
         } else {
-            $this->ticketQuantity = $value;
+            $this->ticketQuantity = $cleanValue; 
         }
         $this->updateTotalAmount();
     }
 
     public function setTicketQuantity($quantity)
     {
+        
         $this->ticketQuantity = max(2, min(100, $quantity));
         $this->updateTotalAmount();
     }
 
     public function updateTotalAmount()
     {
-        $subtotal = $this->ticketQuantity * $this->ticketPrice;
-        $total = $subtotal;
-        $this->totalAmount = number_format($total, 2, '.', '');
+       
+        $subtotal = ($this->ticketQuantity >= 2) ? ($this->ticketQuantity * $this->ticketPrice) : 0;
+        $this->totalAmount = number_format($subtotal, 2, '.', '');
 
+        $this->dispatch('updatePaymentTotalAmount', $this->totalAmount);
     }
 
     public function render()

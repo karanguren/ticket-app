@@ -3,9 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
-use App\Http\Controllers\PaymentController;
+use App\Livewire\TicketsList;
 
-// Route::get('/', [PaymentController::class, 'showPaymentOptions'])->name('welcome');
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,13 +34,8 @@ Route::get('/kk', function () {
     return view('numeros');
 });
 
-Route::get('/list', function () {
-    return view('.ticketsList');
-})->name('ticketsList');
-
-Route::get('/test-payments', function () {
-    // Pasa un total ficticio para la prueba
-    return view('test-payments-view', ['totalAmount' => '99.99']);
-});
+Route::get('/admin-tickets', function () {
+    return view('tickets-admin-page');
+})->name('admin.tickets.list');
 
 require __DIR__.'/auth.php';
