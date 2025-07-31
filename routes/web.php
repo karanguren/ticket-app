@@ -3,9 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
+use App\Livewire\TicketsList;
+
+
 Route::get('/', function () {
     return view('welcome');
-})->name('home');
+})->name('welcome');
+
+Route::get('/faq', function () {
+    return view('faq');
+})->name('faq');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -18,5 +25,17 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
+
+Route::get('/pp', function () {
+    return view('emails/tickets');
+})->name('tickets');
+
+Route::get('/kk', function () {
+    return view('numeros');
+});
+
+Route::get('/admin-tickets', function () {
+    return view('tickets-admin-page');
+})->name('admin.tickets.list');
 
 require __DIR__.'/auth.php';
