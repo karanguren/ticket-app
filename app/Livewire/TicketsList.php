@@ -113,8 +113,8 @@ class TicketsList extends Component
         $attempts = 0;
 
         while (count($tickets) < $count && $attempts < $maxAttempts) {
-            $randomNumber = rand(1, 10000); // Genera un número del 1 al 10.000
-            $ticket = str_pad($randomNumber, 5, '0', STR_PAD_LEFT); // Rellena con ceros a la izquierda hasta 5 dígitos (ej: 00042)
+            $randomNumber = rand(0, 9999); // Genera un número del 1 al 10.000
+            $ticket = str_pad($randomNumber, 4, '0', STR_PAD_LEFT); // Rellena con ceros a la izquierda hasta 5 dígitos (ej: 00042)
 
             // Verifica si el ticket ya existe en la base de datos para evitar duplicados globales
             if (!GeneratedTicket::where('ticket_number', $ticket)->exists()) {
