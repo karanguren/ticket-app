@@ -1,6 +1,6 @@
 services:
-  - type: web
-    name: tu-nombre-de-servicio
+    type: web
+    name: ticket-app
     env: php
     plan: free
     buildCommand: |
