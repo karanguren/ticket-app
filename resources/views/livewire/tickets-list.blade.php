@@ -58,6 +58,7 @@
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Método</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tickets</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tickets Ganador</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                     </tr>
@@ -70,15 +71,9 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification->email }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification->phone }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification->reference_number }}</td>
-                            {{-- Lógica para mostrar Bs. o $ --}}
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 @php
                                     $currencySymbol = 'Bs.';
-                                    // El método de pago no está en PaymentNotification.
-                                    // Si quieres diferenciar por moneda, necesitarás añadir 'currency_type'
-                                    // o 'payment_method' a la tabla PaymentNotification.
-                                    // Por ahora, asumimos Bs. si no hay un campo específico.
-                                    // O si tienes una lógica para inferir, úsala aquí.
                                     // Ejemplo si hubieras añadido 'payment_method' a PaymentNotification:
                                     // if (in_array($notification->payment_method, ['Zelle', 'Binance', 'Zinli'])) {
                                     //     $currencySymbol = '$';
@@ -103,6 +98,13 @@
                                     </div>
                                 @else
                                     <span class="text-gray-500">Pendiente</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if ($notification->has_winning_ticket)
+                                    <span class="text-red-600 font-bold">Tiene un número ganador</span>
+                                @else
+                                    <span class="text-gray-500">No</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">

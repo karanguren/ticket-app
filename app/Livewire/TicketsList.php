@@ -4,25 +4,25 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\PaymentNotification;
-use App\Models\GeneratedTicket; // <--- Importamos el nuevo modelo
+use App\Models\GeneratedTicket; 
 use Livewire\WithPagination;
-use Carbon\Carbon; // Para diffForHumans
+use Carbon\Carbon; 
 
 class TicketsList extends Component
 {
     use WithPagination;
 
     public $search = '';
-    public $filterConfirmed = 'false'; // 'true', 'false', 'all'
-    public $notificationId; // Para almacenar el ID de la notificación a confirmar
+    public $filterConfirmed = 'false'; 
+    public $notificationId; 
     public $showConfirmModal = false;
 
-    // Propiedades para los datos de la notificación en el modal (si los necesitas allí)
     public $modalNotificationName;
     public $modalNotificationAmount;
-    public $modalNotificationTicketsCount; // Asegúrate de que esta propiedad esté aquí
+    public $modalNotificationTicketsCount; 
 
-    // Método para abrir el modal de confirmación
+    public $winningNumbers = ['01234', '05555', '02313', '07890', '0333'];
+
     public function openConfirmModal($id)
     {
         $this->notificationId = $id;
@@ -30,8 +30,7 @@ class TicketsList extends Component
         if ($notification) {
             $this->modalNotificationName = $notification->name;
             $this->modalNotificationAmount = $notification->amount;
-            $this->modalNotificationTicketsCount = $notification->number_of_tickets; // Asigna la cantidad de tickets
-
+            $this->modalNotificationTicketsCount = $notification->number_of_tickets;
             $this->showConfirmModal = true;
         } else {
             session()->flash('error', 'Notificación no encontrada.');
@@ -64,71 +63,63 @@ class TicketsList extends Component
             return;
         }
 
-        // --- LÓGICA DE GENERACIÓN Y ALMACENAMIENTO DE TICKETS ---
+        $hasWinner = false;
+
         try {
-            // Obtenemos la cantidad de tickets a generar de la BD
             $numberOfTicketsToGenerate = $notification->number_of_tickets;
-
-            // dd($numberOfTicketsToGenerate); // Para depuración: verificar cuántos tickets se deben generar
-
             $generatedTicketsArray = $this->generateUniqueTicketNumbers($numberOfTicketsToGenerate);
 
-            // dd($generatedTicketsArray); // Para depuración: verificar los tickets generados
-
-            // Guardar cada ticket en la nueva tabla `generated_tickets`
             foreach ($generatedTicketsArray as $ticketNumber) {
                 GeneratedTicket::create([
                     'payment_notification_id' => $notification->id,
-                    'cedula' => $notification->cedula, // Usamos la cédula de la notificación de pago
+                    'cedula' => $notification->cedula, 
                     'ticket_number' => $ticketNumber,
                 ]);
             }
 
-            // Actualizar la notificación de pago
             $notification->is_confirmed = true;
             $notification->confirmed_at = now();
-            // Almacenar el array de tickets generados como JSON en la columna 'tickets'
             $notification->tickets = json_encode($generatedTicketsArray);
+            $notification->has_winning_ticket = $hasWinner;
             $notification->save();
 
             session()->flash('message', 'Pago confirmado y tickets generados con éxito!');
         } catch (\Exception $e) {
             session()->flash('error', 'Error al confirmar el pago o generar tickets: ' . $e->getMessage());
-            // Opcional: Loguear el error para depuración
-            // \Log::error('Error generating tickets: ' . $e->getMessage() . ' for notification ID: ' . $this->notificationId);
         }
 
         $this->closeConfirmModal();
-        $this->resetPage(); // Resetear paginación si es necesario
+        $this->resetPage(); 
     }
 
-    /**
-     * Genera un array de números de tickets únicos.
-     * Basado en la cantidad confirmada.
-     */
     private function generateUniqueTicketNumbers($count)
     {
         $tickets = [];
-        $maxAttempts = $count * 5; // Limita los intentos para evitar bucles infinitos en caso de números insuficientes
+        $maxAttempts = $count * 5;
         $attempts = 0;
 
         while (count($tickets) < $count && $attempts < $maxAttempts) {
-            $randomNumber = rand(1, 10000); // Genera un número del 1 al 10.000
-            $ticket = str_pad($randomNumber, 5, '0', STR_PAD_LEFT); // Rellena con ceros a la izquierda hasta 5 dígitos (ej: 00042)
+            $randomNumber = rand(0, 9999); 
+            $ticket = str_pad($randomNumber, 4, '0', STR_PAD_LEFT); 
 
-            // Verifica si el ticket ya existe en la base de datos para evitar duplicados globales
+            if (in_array($ticket, $this->winningNumbers)) {
+                
+                $hasWinner = true;
+            }
+
+           
             if (!GeneratedTicket::where('ticket_number', $ticket)->exists()) {
-                $tickets[] = $ticket; // Añade a nuestro array temporal
+                $tickets[] = $ticket; 
             }
             $attempts++;
         }
 
-        // Si después de muchos intentos no se pudo generar la cantidad deseada (poco probable con 10k números)
+        
         if (count($tickets) < $count) {
             session()->flash('warning', 'No se pudieron generar todos los tickets únicos solicitados. Se generaron ' . count($tickets) . ' de ' . $count . '.');
         }
 
-        return array_unique($tickets); // Asegura unicidad en el array devuelto, aunque ya lo chequeamos con `exists()`
+        return array_unique($tickets); 
     }
 
     public function sendWhatsApp($notificationId)
