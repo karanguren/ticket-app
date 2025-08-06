@@ -1,13 +1,23 @@
  <div>
-   
+    
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 bg-gray-100 min-h-screen">
-        <div class="flex items-center mb-5 mt-10 md:px-[76px] px-[50px] justify-center">
+        <!-- <div class="flex items-center mb-2 mt-2 md:px-[76px] px-[50px] justify-center">
+            <div class="w-full p-4 flex flex-col items-center ">
+                <button 
+                    wire:click="openExchangeRateModal"
+                    class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                >
+                    Cambiar Tasa de Cambio
+                </button>
+            </div>
+        </div> -->
+
+        <div class="flex items-center mb-5 mt-8 md:px-[76px] px-[50px] justify-center">
             <div class="w-full p-4 flex flex-col items-center ">
                 <p class="text-3xl text-[#ef4848] font-bold text-center">Gestión de Notificaciones de Pago</p>
             </div>
         </div>
     
-        {{-- Mensajes de sesión --}}
         @if (session()->has('message'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                 <span class="block sm:inline">{{ session('message') }}</span>
@@ -29,7 +39,7 @@
             <input
                 wire:model.live.debounce.300ms="search"
                 type="text"
-                placeholder="Buscar por nombre, cédula, correo o referencia..."
+                placeholder="Buscar por nombre, cédula, correo, tickets o referencia..."
                 class="w-full sm:w-2/3 md:w-1/2 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             >
     
@@ -133,7 +143,7 @@
                                     <button
                                         wire:click="sendTicketsEmail({{ $notification->id }})"
                                         wire:loading.attr="disabled"
-                                        class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mr-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                                        class="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 mr-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                                     >
                                         Enviar Correo
                                     </button>
@@ -147,10 +157,7 @@
                                     >
                                         Enviar WhatsApp
                                     </button>
-                                <!-- @else
-                                    <button class=" px-6 py-2 bg-gray-400 text-white font-semibold rounded-lg mr-2 cursor-not-allowed" disabled >
-                                        WhatsApp
-                                    </button> -->
+                                
                                 @endif
                             </td>
                         </tr>
@@ -169,7 +176,7 @@
         <div class="mt-4">
             {{ $notifications->links() }}
         </div>
-    
+        <!-- Modal de confirmacion -->
         @if ($showConfirmModal)
             <div class="fixed inset-0 z-50 flex items-center justify-center bg-[#000000b5] bg-opacity-50 p-4" x-cloak>
                 <div class="bg-white rounded-lg shadow-xl w-full max-w-sm mx-auto p-6">
@@ -196,7 +203,7 @@
                 </div>
             </div>
         @endif
-
+        <!-- modal de tickets -->
         @if ($showTicketsModal && $selectedNotification)
             @php
                 $decodedTickets = json_decode($selectedNotification->tickets, true);
@@ -235,6 +242,53 @@
                             Cerrar
                         </button>
                     </div>
+                </div>
+            </div>
+        @endif
+        <!-- Modal de tasa de cambio -->
+        @if ($showExchangeRateModal)
+            <div class="fixed inset-0 z-50 flex items-center justify-center bg-[#000000b5] bg-opacity-50 p-4">
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-auto p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-900">Actualizar Tasa de Cambio</h3>
+                        <button wire:click="closeExchangeRateModal" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-4">Ingrese la nueva tasa de cambio del dólar a bolívares.</p>
+
+                    <form wire:submit.prevent="saveExchangeRate">
+                        <div class="mb-4">
+                            <label for="exchangeRate" class="block text-sm font-medium text-gray-700">Tasa de Cambio (Bs./$)</label>
+                            <input 
+                                type="text" 
+                                id="exchangeRate" 
+                                wire:model="exchangeRate" 
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                placeholder="ej. 100.50"
+                            >
+                            @error('exchangeRate') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        </div>
+                        
+                        <div class="text-right mt-6">
+                            <button 
+                                wire:click="closeExchangeRateModal" 
+                                type="button" 
+                                class="px-4 py-2 mr-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                            >
+                                Cancelar
+                            </button>
+                            <button 
+                                type="submit" 
+                                class="px-6 py-2 ml-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 mr-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                                Guardar
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         @endif

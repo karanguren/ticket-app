@@ -20,29 +20,15 @@
             @livewireStyles
             <style>
 
-                .diagonal {
-                    writing-mode: vertical-rl;
-                    text-orientation: mixed;
-                }
-
-                @media (max-width: 991px) {
-                    .fixed-footer {
-                        display: none;
-                    }
-
-                    .img-about {
-                        display: none;
-                    }
-
-                    .contact-mb {
-                        padding: 0 !important;
-                    }
-                }
-
                 /* Carrousel */
 
                 .carousel {
                     background: transparent;
+                }
+
+                .flickity-viewport {
+                    height: 415px !important;
+                    border-radius: 20px;
                 }
 
                 .carousel-cell-1 {
@@ -77,11 +63,11 @@
 
                 <div class="carousel w-full md:w-3/4 h-96" data-flickity='{"wrapAround": true, "autoPlay": 5000, "prevNextButtons": false, "pageDots": false}'>
                     <div class="carousel-cell-1 w-full h-96">
-                        <img class="bg-cover w-full" src="{{asset('images/r1.jpg')}}" alt="1"/>
+                        <img class="bg-cover w-full" src="{{asset('images/r1.png')}}" alt="1"/>
                     </div>
-                    <div class="carousel-cell-2 w-full h-96">
+                    <!-- <div class="carousel-cell-2 w-full h-96">
                         <img class="bg-cover w-full" src="{{asset('images/r2.jpg')}}" alt="2"/>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -118,7 +104,7 @@
                     </button>
                 </div>
                 <flux:callout class="md:w-3/4 w-full mb-2" variant="warning" icon="exclamation-circle" heading="Asegúrate de que la cantidad sea exacta y envía el capture." />
-                <flux:callout class="md:w-3/4 w-full mb-2" variant="warning" icon="exclamation-circle" heading="Recuerde que debe esperar un lapso de 24 a 36 Horas aproximadamente mientras nuestro equipo trabaja para verificar y validar su compra y proceder a enviarles sus números de manera aleatoria a su correo elect rónico suministrado previamente" />
+                <flux:callout class="md:w-3/4 w-full mb-2" variant="warning" icon="exclamation-circle" heading="Recuerde que debe esperar un lapso de 24 a 36 Horas aproximadamente mientras nuestro equipo trabaja para verificar y validar su compra y proceder a enviarles sus números de manera aleatoria a su correo electrónico suministrado previamente" />
                 <flux:callout class="md:w-3/4 w-full" icon="exclamation-triangle" color="red" inline>
                     <flux:callout.heading>IMPORTANTE</flux:callout.heading>
                     <flux:callout.text>Si en 24 horas no te llegan tus Números al correo, por favor escribe a Soporte no antes.</flux:callout.text>

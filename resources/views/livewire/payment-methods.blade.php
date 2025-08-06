@@ -7,7 +7,7 @@
         <!-- <div wire:click="showPaymentMethod('zelle')" class="cursor-pointer">
             <img class="w-20 h-20 rounded-full object-cover shadow-md hover:shadow-lg transition duration-200 transform hover:scale-105" src="{{asset('images/b.jpg')}}" alt="Zelle"/>
         </div>
-        <div wire:click="showPaymentMethod('binance')" class="cursor-pointer">
+         <div wire:click="showPaymentMethod('binance')" class="cursor-pointer">
             <img class="w-20 h-20 rounded-full object-cover shadow-md hover:shadow-lg transition duration-200 transform hover:scale-105" src="{{asset('images/e.png')}}" alt="Binance"/>
         </div>
         <div wire:click="showPaymentMethod('zinli')" class="cursor-pointer">

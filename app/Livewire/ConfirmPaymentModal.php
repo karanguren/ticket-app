@@ -22,6 +22,8 @@ class ConfirmPaymentModal extends Component
     public $totalAmount;
     public $numberOfTickets;
 
+    public $paymentSubmitted = false;
+
 
     protected $listeners = [
         'open-confirm-payment-modal' => 'openModal',
@@ -32,6 +34,7 @@ class ConfirmPaymentModal extends Component
     {
         $this->showModal = true;
         $this->resetForm();
+        $this->paymentSubmitted = false;
 
         if ($amount !== null) {
             $this->totalAmount = $amount;
@@ -45,11 +48,7 @@ class ConfirmPaymentModal extends Component
     {
         $this->showModal = false;
         $this->resetForm();
-    }
-
-    public function updateTotalAmount($amount)
-    {
-        $this->totalAmount = $amount;
+        $this->paymentSubmitted = false;
     }
 
     public function confirmPayment()
@@ -81,8 +80,10 @@ class ConfirmPaymentModal extends Component
                 'number_of_tickets' => $this->numberOfTickets,
             ]);
 
+            $this->dispatch('paymentConfirmationSuccess');
+
+            $this->paymentSubmitted = true;
             session()->flash('message', '¡Tu notificación de pago ha sido enviada con éxito!');
-            // $this->closeModal(); 
 
         } catch (\Exception $e) {
             

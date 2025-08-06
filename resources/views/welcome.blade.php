@@ -27,23 +27,6 @@
                 }
             }
 
-            /* Carrousel */
-
-            .carousel {
-                background: transparent;
-            }
-
-            .carousel-cell-1 {
-                background-position: center;
-                margin-right: 30px;
-                border-radius: 10px;
-            }
-
-            .carousel-cell-2 {
-                margin-right: 30px;
-                background-position: center;
-                border-radius: 10px;
-            }
         </style>
     </head>
     <body>
@@ -63,9 +46,9 @@
                 <a href="https://www.instagram.com/rifasloshermanos333" target="_blank" class="mb-[20px] ml-[0px] w-[23px]">
                     <img src="{{asset('images/instagram.png')}}" style="width: 100%">
                 </a>
-                <a href="#" target="_blank" class="ml-[0px] w-[23px]">
+                <!-- <a href="#" target="_blank" class="ml-[0px] w-[23px]">
                     <img src="{{asset('images/tik-tok.png')}}" style="width: 100%">
-                </a>
+                </a> -->
             </div>
         </div>
     </footer>

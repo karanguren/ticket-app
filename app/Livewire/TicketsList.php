@@ -9,6 +9,7 @@ use Livewire\WithPagination;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TicketsEmail;
+use App\Models\ExchangeRate;
 
 class TicketsList extends Component
 {
@@ -26,7 +27,17 @@ class TicketsList extends Component
     public $modalNotificationAmount;
     public $modalNotificationTicketsCount; 
 
-    public $winningNumbers = ['01234', '05555', '02313', '07890', '0333'];
+    public $showExchangeRateModal = false;
+    public $exchangeRate = 0;
+
+    public $winningNumbers = ['1234', '5555', '2313', '7890', '3333'];
+
+    public function mount()
+    {
+        
+        $rate = ExchangeRate::latest()->first();
+        $this->exchangeRate = $rate ? $rate->rate : 38.00; 
+    }
 
     public function openConfirmModal($id)
     {
@@ -62,6 +73,34 @@ class TicketsList extends Component
     {
         $this->showTicketsModal = false;
         $this->selectedNotification = null;
+    }
+
+    public function openExchangeRateModal()
+    {
+        $this->showExchangeRateModal = true;
+    }
+
+    public function closeExchangeRateModal()
+    {
+        $this->showExchangeRateModal = false;
+    }
+
+    public function saveExchangeRate()
+    {
+        $this->validate([
+            'exchangeRate' => 'required|numeric|gt:0',
+        ]);
+
+        $rate = ExchangeRate::latest()->first();
+        if ($rate) {
+            $rate->update(['rate' => $this->exchangeRate]);
+        } else {
+            ExchangeRate::create(['rate' => $this->exchangeRate]);
+        }
+
+        session()->flash('message', 'Tasa de cambio actualizada con éxito.');
+        $this->closeExchangeRateModal();
+        $this->dispatch('exchangeRateUpdated', $this->exchangeRate); 
     }
 
     public function confirmPayment()
@@ -104,11 +143,6 @@ class TicketsList extends Component
             $notification->has_winning_ticket = $hasWinner;
             $notification->save();
 
-            Mail::to($notification->email)->send(new TicketsEmail(
-                $notification->name, 
-                $generatedTicketsArray
-            ));
-
             session()->flash('message', 'Pago confirmado y tickets generados con éxito!');
         } catch (\Exception $e) {
             session()->flash('error', 'Error al confirmar el pago o generar tickets: ' . $e->getMessage());
@@ -117,6 +151,34 @@ class TicketsList extends Component
         $this->closeConfirmModal();
         $this->resetPage(); 
         $this->dispatch('refresh-tickets');
+    }
+
+    public function sendTicketsEmail($notificationId)
+    {
+        $notification = PaymentNotification::find($notificationId);
+
+        if (!$notification || !$notification->is_confirmed) {
+            session()->flash('error', 'Notificación no encontrada o no confirmada.');
+            return;
+        }
+
+        if (!$notification->tickets) {
+            session()->flash('warning', 'No hay tickets asignados a esta notificación para enviar por correo.');
+            return;
+        }
+
+        try {
+            $decodedTickets = json_decode($notification->tickets, true);
+            
+            Mail::to($notification->email)->send(new TicketsEmail(
+                $notification->name, 
+                $decodedTickets
+            ));
+
+            session()->flash('message', '¡Correo de tickets enviado con éxito!');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Hubo un error al enviar el correo: ' . $e->getMessage());
+        }
     }
 
     private function generateUniqueTicketNumbers($count)
