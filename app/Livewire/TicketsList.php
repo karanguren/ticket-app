@@ -6,16 +6,21 @@ use Livewire\Component;
 use App\Models\PaymentNotification;
 use App\Models\GeneratedTicket; 
 use Livewire\WithPagination;
-use Carbon\Carbon; 
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TicketsEmail;
 
 class TicketsList extends Component
 {
     use WithPagination;
 
     public $search = '';
-    public $filterConfirmed = 'false'; 
+    public $filterConfirmed = 'all'; 
     public $notificationId; 
     public $showConfirmModal = false;
+    public $showTicketsModal = false;
+
+    public $selectedNotification = null;
 
     public $modalNotificationName;
     public $modalNotificationAmount;
@@ -41,6 +46,22 @@ class TicketsList extends Component
     {
         $this->showConfirmModal = false;
         $this->reset(['notificationId', 'modalNotificationName', 'modalNotificationAmount', 'modalNotificationTicketsCount']);
+    }
+
+    public function openTicketsModal($id)
+    {
+        $this->selectedNotification = PaymentNotification::find($id);
+        if ($this->selectedNotification) {
+            $this->showTicketsModal = true;
+        } else {
+            session()->flash('error', 'Notificación no encontrada.');
+        }
+    }
+
+    public function closeTicketsModal()
+    {
+        $this->showTicketsModal = false;
+        $this->selectedNotification = null;
     }
 
     public function confirmPayment()
@@ -83,6 +104,11 @@ class TicketsList extends Component
             $notification->has_winning_ticket = $hasWinner;
             $notification->save();
 
+            Mail::to($notification->email)->send(new TicketsEmail(
+                $notification->name, 
+                $generatedTicketsArray
+            ));
+
             session()->flash('message', 'Pago confirmado y tickets generados con éxito!');
         } catch (\Exception $e) {
             session()->flash('error', 'Error al confirmar el pago o generar tickets: ' . $e->getMessage());
@@ -90,6 +116,7 @@ class TicketsList extends Component
 
         $this->closeConfirmModal();
         $this->resetPage(); 
+        $this->dispatch('refresh-tickets');
     }
 
     private function generateUniqueTicketNumbers($count)
@@ -151,7 +178,8 @@ class TicketsList extends Component
                 $query->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('cedula', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%')
-                    ->orWhere('reference_number', 'like', '%' . $this->search . '%');
+                    ->orWhere('reference_number', 'like', '%' . $this->search . '%')
+                    ->orWhere('tickets', 'like', '%' . $this->search . '%');
             })
             ->when($this->filterConfirmed !== 'all', function ($query) {
                 $query->where('is_confirmed', $this->filterConfirmed === 'true');

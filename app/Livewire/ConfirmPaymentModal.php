@@ -59,8 +59,8 @@ class ConfirmPaymentModal extends Component
             'cedula' => 'required|string|max:20',
             'phone' => 'required|string|max:20',
             'email' => 'required|email|max:255',
-            'ref' => 'required|string|max:4', // Asumiendo que 'ref' son los últimos 4 dígitos
-            'image' => 'required|image|max:10240', // Max 10MB
+            'ref' => 'required|string|max:4',
+            'image' => 'required|image|max:10240',
         ]);
 
         $imagePath = null;
@@ -70,7 +70,7 @@ class ConfirmPaymentModal extends Component
 
         try {
             PaymentNotification::create([
-                'name' => $this->name,
+                'name' => $this->name,  
                 'cedula' => $this->cedula,
                 'phone' => $this->phone,
                 'email' => $this->email,

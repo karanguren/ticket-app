@@ -21,7 +21,7 @@
     </div>
     <p class="text-white mt-2 mb-4 text-[13px] w-full text-center px-10">
         Seleccione la cantidad de números a comprar. Utiliza los botones para seleccionar de forma más rápida una
-        cantidad mayor de tickets a comprar. <strong>Mínimo 2 y Máximo 100 Tickets por compra</strong>
+        cantidad mayor de tickets a comprar. <strong>Mínimo 2 Tickets por compra</strong>
     </p>
 
     <div class="flex flex-wrap justify-center w-full gap-4 mb-4">
