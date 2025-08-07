@@ -1,9 +1,10 @@
 <div>
     <div id="ticketVerifierModal" class="fixed inset-0 z-50 {{ $showModal ? 'flex' : 'hidden' }} items-center justify-center p-4">
         <div class="fixed inset-0 bg-black opacity-50" wire:click="closeModal"></div>
-        <div class="relative p-5 border max-w-md w-full shadow-lg rounded-md bg-white">
+        
+        <div class="relative p-5 border max-w-xl w-full max-h-[90vh] shadow-lg rounded-md bg-white overflow-y-auto">
             <div class="mt-3">
-                <div class="flex justify-between items-center mb-4 px-7"> 
+                <div class="flex justify-between items-center mb-4 px-7">
                     <h3 class="text-2xl text-[#ef4848] font-bold leading-6">Verificar Tickets</h3>
                     <button wire:click="closeModal" type="button" class="text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -35,9 +36,9 @@
                         @if (!empty($foundTickets))
                             <div class="mt-6 text-left">
                                 <p class="font-semibold text-gray-700 mb-2">Tus números comprados:</p>
-                                <div class="flex flex-wrap gap-2">
+                                <div class="grid grid-cols-5 sm:grid-cols-6 lg:grid-cols-6 gap-2">
                                     @foreach ($foundTickets as $ticket)
-                                        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full">
+                                        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full text-center">
                                             {{ $ticket }}
                                         </span>
                                     @endforeach
@@ -51,11 +52,11 @@
                     @endif
                 </div>
 
-                <!-- <div class="items-center px-4 py-3 mt-4"> 
-                    <button wire:click="closeModal" type="button" class="cursor-pointer px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-36 shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                <div class="mt-4 text-center">
+                    <button wire:click="closeModal" type="button" class="cursor-pointer px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md w-36 shadow-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500">
                         Cerrar
                     </button>
-                </div> -->
+                </div>
             </div>
         </div>
     </div>

@@ -33,6 +33,29 @@
                 <span class="block sm:inline">{{ session('error') }}</span>
             </div>
         @endif
+
+        <div class="mb-6 flex flex-col items-start gap-4">
+            <button
+                wire:click="findUserWithMostTickets"
+                class="px-6 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors duration-200"
+            >
+                Ver usuario con más tickets
+            </button>
+            @if ($mostTicketsUser)
+                <div class="p-4 bg-purple-100 border-l-4 border-purple-500 text-purple-700 rounded-r-lg shadow-md w-full relative">
+                    <button wire:click="closeMostTicketsUser" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                    <p class="font-bold">El usuario con más tickets es:</p>
+                    <p>
+                        Cédula: <span class="font-semibold">{{ $mostTicketsUser['cedula'] }}</span>
+                        | Total de Tickets: <span class="font-semibold">{{ $mostTicketsUser['total_tickets'] }}</span>
+                    </p>
+                </div>
+            @endif
+        </div>
     
         {{-- Controles de Filtro y Búsqueda --}}
         <div class="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -52,6 +75,8 @@
                 <option value="true">Solo Confirmados</option>
             </select>
         </div>
+
+        
     
         {{-- Tabla de Notificaciones --}}
         <div class="bg-white shadow-md rounded-lg overflow-x-auto">
@@ -221,10 +246,11 @@
                     
                     <p class="text-gray-700 mb-4">A continuación se muestran todos los tickets asignados a esta notificación.</p>
 
-                    <div class="flex gap-2 mb-6 max-h-60 overflow-y-auto p-2 border rounded-md flex-wrap">
+                    <div class="grid grid-cols-5 sm:grid-cols-6 lg:grid-cols-6 gap-2 mb-6 max-h-60 overflow-y-auto p-2 border rounded-md flex-wrap">
                         @if ($decodedTickets)
                             @foreach ($decodedTickets as $ticket)
                                 <span class="inline-flex items-center justify-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800">
+                                    <!-- {{ $loop->iteration }} - {{ $ticket }} -->
                                     {{ $ticket }}
                                 </span>
                             @endforeach

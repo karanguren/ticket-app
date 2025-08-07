@@ -15,7 +15,7 @@
         </div> -->
     </div>
     <div id="miDiv" class="relative flex flex-col my-6 bg-white shadow-sm border border-slate-200 rounded-lg w-96 {{ $showPaymentInfo ? '' : 'hidden' }}">
-        <div class="p-4 h-64 flex justify-center items-center flex-col">
+        <div class="p-4 h-48 flex justify-center items-center flex-col">
             <h5 class="mb-2 text-[#ef4848] text-xl font-semibold text-center">{{ $paymentTitle }}</h5>
             <div class="text-slate-600 leading-normal font-light">
                 {!! $paymentContent !!}

@@ -30,6 +30,8 @@ class TicketsList extends Component
     public $showExchangeRateModal = false;
     public $exchangeRate = 0;
 
+    public $mostTicketsUser = null;
+
     public $winningNumbers = ['1234', '5555', '2313', '7890', '3333'];
 
     public function mount()
@@ -37,6 +39,29 @@ class TicketsList extends Component
         
         $rate = ExchangeRate::latest()->first();
         $this->exchangeRate = $rate ? $rate->rate : 38.00; 
+    }
+
+    public function closeMostTicketsUser()
+    {
+        $this->mostTicketsUser = null;
+    }
+
+    public function findUserWithMostTickets()
+    {
+        $topUser = GeneratedTicket::select('cedula')
+            ->selectRaw('count(*) as total_tickets')
+            ->groupBy('cedula')
+            ->orderByDesc('total_tickets')
+            ->first();
+
+        if ($topUser) {
+            $this->mostTicketsUser = [
+                'cedula' => $topUser->cedula,
+                'total_tickets' => $topUser->total_tickets,
+            ];
+        } else {
+            $this->mostTicketsUser = null;
+        }
     }
 
     public function openConfirmModal($id)
@@ -182,34 +207,30 @@ class TicketsList extends Component
     }
 
     private function generateUniqueTicketNumbers($count)
-    {
-        $tickets = [];
-        $maxAttempts = $count * 5;
-        $attempts = 0;
+{
+    $existingTickets = GeneratedTicket::pluck('ticket_number')->toArray();
 
-        while (count($tickets) < $count && $attempts < $maxAttempts) {
-            $randomNumber = rand(0, 9999); 
-            $ticket = str_pad($randomNumber, 4, '0', STR_PAD_LEFT); 
+    $allPossibleTickets = range(0, 9999);
+    $allPossibleTickets = array_map(function($n) {
+        return str_pad($n, 4, '0', STR_PAD_LEFT);
+    }, $allPossibleTickets);
 
-            if (in_array($ticket, $this->winningNumbers)) {
-                
-                $hasWinner = true;
-            }
+    $availableTickets = array_diff($allPossibleTickets, $existingTickets);
+    
+    $availableTickets = array_values($availableTickets);
 
-           
-            if (!GeneratedTicket::where('ticket_number', $ticket)->exists()) {
-                $tickets[] = $ticket; 
-            }
-            $attempts++;
-        }
+    shuffle($availableTickets);
 
-        
-        if (count($tickets) < $count) {
-            session()->flash('warning', 'No se pudieron generar todos los tickets únicos solicitados. Se generaron ' . count($tickets) . ' de ' . $count . '.');
-        }
-
-        return array_unique($tickets); 
+    if (count($availableTickets) < $count) {
+        $ticketsToReturn = array_slice($availableTickets, 0, count($availableTickets));
+        session()->flash('warning', 'Solo se pudieron generar ' . count($ticketsToReturn) . ' de ' . $count . ' tickets solicitados debido a la falta de números únicos disponibles.');
+        return $ticketsToReturn;
     }
+
+    $newTickets = array_slice($availableTickets, 0, $count);
+
+    return $newTickets;
+}
 
     public function sendWhatsApp($notificationId)
     {

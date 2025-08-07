@@ -26,10 +26,7 @@
                     background: transparent;
                 }
 
-                .flickity-viewport {
-                    height: 415px !important;
-                    border-radius: 20px;
-                }
+                
 
                 .carousel-cell-1 {
                     background-position: center;
@@ -46,32 +43,32 @@
 
     </head>
 
-    <body class="bg-[url('../../public/images/fondoDark.png')] dark:bg-[url('../../public/images/fondoLight.png')] bg-cover bg-no-repeat bg-center md:bg-left text-[#1b1b18] flex p-6 lg:p-8 lg:justify-center min-h-screen flex-col overflow-x-hidden ">
+    <body class="bg-[url('../../public/images/fondoDark.png')] dark:bg-[url('../../public/images/fondoLight.png')] bg-cover bg-no-repeat bg-center md:bg-left text-[#1b1b18] flex p-2 lg:p-8 lg:justify-center min-h-screen flex-col overflow-x-hidden ">
         
         <div class="flex flex-col md:flex-row items-center sm:px-[100px] md:px-[76px] px-[50px] gap-8 w-full">
             <div class="w-full md:w-1/2 p-4 flex flex-col items-center ">
                 <p class="text-4xl text-[#ef4848] font-bold text-center"> Bienvenidos<br> Rifas los Hermanos</p>
                 <img class="md:max-w-lg" src="{{asset('images/logo.png')}}" alt="Background"/>
             </div>
-            <div class="w-full md:w-1/2 p-4 flex flex-col items-center">
-                <p class="text-3xl text-[#ef4848] font-bold mt-5">🥇 Primer Premio</p>
+            <div class="w-full md:w-1/2 p-4 flex flex-col items-center text-center">
+                <p class="text-2xl text-[#ef4848] font-bold mt-5">🥇 Primer Premio</p>
                 <p class="text-white text-xl mt-5">Moto Rk 200 (2025) 🏍️</p>
-                <p class="text-3xl text-[#ef4848] font-bold mt-5">🥈 Segundo Premio</p>
-                <p class="text-white text-xl mt-5">Mercado de Comida valorado en 150$ 🛒</p>
-                <p class="text-3xl text-[#ef4848] font-bold mt-5">🥉 Tercer Premio</p>
-                <p class="text-white text-xl mt-5 mb-10">100$ en Efectivo 💵</p>
-
-                <div class="carousel w-full md:w-3/4 h-96" data-flickity='{"wrapAround": true, "autoPlay": 5000, "prevNextButtons": false, "pageDots": false}'>
+                <p class="text-2xl text-[#ef4848] font-bold mt-5">🥈 Segundo Premio</p>
+                <p class="text-white text-xl mt-5">Mercado de Comida de 150$ 🛒</p>
+                <p class="text-2xl text-[#ef4848] font-bold mt-5">🥉 Tercer Premio</p>
+                <p class="text-white text-xl mt-5 mb-5">100$ en Efectivo 💵</p>
+                <img class="bg-cover md:max-w-md" src="{{asset('images/r1.png')}}" alt="1"/>
+                <!-- <div class="carousel w-full md:w-3/4 h-96" data-flickity='{"wrapAround": true, "autoPlay": 5000, "prevNextButtons": false, "pageDots": false}'>
                     <div class="carousel-cell-1 w-full h-96">
                         <img class="bg-cover w-full" src="{{asset('images/r1.png')}}" alt="1"/>
                     </div>
-                    <!-- <div class="carousel-cell-2 w-full h-96">
+                     <div class="carousel-cell-2 w-full h-96">
                         <img class="bg-cover w-full" src="{{asset('images/r2.jpg')}}" alt="2"/>
-                    </div> -->
-                </div>
+                    </div> 
+                </div> -->
             </div>
         </div>
-        <div class="flex items-center mb-5 mt-10 md:px-[76px] px-[50px] justify-center">
+        <div class="flex items-center mb-5 md:px-[76px] px-[50px] justify-center">
             <div class="w-full p-4 flex flex-col items-center ">
                 <p class="text-2xl text-[#ef4848] font-bold text-center">¿Cómo puedes participar en un sorteo?</p>
             </div>
@@ -100,7 +97,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        Verificar Tickets
+                        Ver Tickets Comprados
                     </button>
                 </div>
                 <flux:callout class="md:w-3/4 w-full mb-2" variant="warning" icon="exclamation-circle" heading="Asegúrate de que la cantidad sea exacta y envía el capture." />
