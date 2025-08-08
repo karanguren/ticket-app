@@ -3,18 +3,26 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Models\ExchangeRate;
 
 class BuyTickets extends Component
 {
     public $ticketQuantity = 0;
-    public $ticketPrice = 60.00;
-    public $totalAmount = '0.00'; // Se mantendrá como string formateado
-
+    public $ticketPrice = 75.00;
+    public $totalAmount = '0.00';
+    public $totalAmountInDollars = '0.00';
+    public $exchangeRate;
+    
+    protected $listeners = ['exchangeRateUpdated', 'paymentConfirmationSuccess' => 'resetTicketSelection'];
+    
     public function mount()
     {
+        $rate = ExchangeRate::latest()->first();
+        $this->exchangeRate = $rate ? $rate->rate : 38.00;
+        
         $this->updateTotalAmount();
-        // Al montar, también despachamos los valores iniciales a PaymentMethods
-        $this->dispatch('updateConfirmPaymentDetails', $this->totalAmount, $this->ticketQuantity)->to('payment-methods');
+        $this->dispatch('updatePaymentTotalAmount', (float) $this->totalAmount, (float) $this->totalAmountInDollars, $this->ticketQuantity)->to('payment-methods');
+        
     }
 
     public function updatedTicketQuantity($value)
@@ -22,11 +30,8 @@ class BuyTickets extends Component
         $cleanValue = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
         $cleanValue = (int) $cleanValue;
 
-        // Lógica para el mínimo de 2 tickets y máximo de 100
         if ($cleanValue < 2 && $cleanValue !== 0) {
             $this->ticketQuantity = 2;
-        } elseif ($cleanValue > 100) {
-            $this->ticketQuantity = 100;
         } else {
             $this->ticketQuantity = $cleanValue;
         }
@@ -36,32 +41,36 @@ class BuyTickets extends Component
 
     public function setTicketQuantity($quantity)
     {
-        // Lógica para el mínimo de 2 tickets y máximo de 100
-        $this->ticketQuantity = max(2, min(100, $quantity));
+        $this->ticketQuantity = max(2, $quantity);
         $this->updateTotalAmount();
     }
 
     public function updateTotalAmount()
-{
-    $subtotal = ($this->ticketQuantity >= 2) ? ($this->ticketQuantity * $this->ticketPrice) : 0;
-    $this->totalAmount = number_format($subtotal, 2, '.', '');
-
-    // Importante: Despachamos AMBOS valores al listener del PaymentMethods
-    $this->dispatch('updatePaymentTotalAmount', (float) $this->totalAmount, $this->ticketQuantity)->to('payment-methods');
-}
-
-    // El método openConfirmPaymentModal ya no será llamado desde este componente,
-    // sino desde un botón en payment-methods.blade.php que llama a un método en PaymentMethods.php
-    // Por lo tanto, puedes eliminar o dejar este método comentado si no se usa.
-    // Si tienes un botón en BuyTickets.blade.php que abre el modal, entonces SÍ lo necesitarías.
-    /*
-    public function openConfirmPaymentModal()
     {
-        // Aquí no necesitas calculateTotal() porque updateTotalAmount ya lo hace
-        // Y las propiedades son $totalAmount y $ticketQuantity
-        $this->dispatch('open-confirm-payment-modal', (float) $this->totalAmount, $this->ticketQuantity);
+        $subtotalBs = ($this->ticketQuantity >= 2) ? ($this->ticketQuantity * $this->ticketPrice) : 0;
+        $this->totalAmount = number_format($subtotalBs, 2, '.', '');
+        
+        if ($this->exchangeRate > 0) {
+            $subtotalDollars = $subtotalBs / $this->exchangeRate;
+            $this->totalAmountInDollars = number_format($subtotalDollars, 2, '.', '');
+        } else {
+            $this->totalAmountInDollars = '0.00';
+        }
+
+        $this->dispatch('updatePaymentTotalAmount', (float) $this->totalAmount, (float) $this->totalAmountInDollars, $this->ticketQuantity)->to('payment-methods');
     }
-    */
+
+    public function exchangeRateUpdated($newRate)
+    {
+        $this->exchangeRate = $newRate;
+        $this->updateTotalAmount();
+    }
+
+    public function resetTicketSelection()
+    {
+        $this->ticketQuantity = 0; 
+        $this->updateTotalAmount();
+    }
 
     public function render()
     {

@@ -4,25 +4,66 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\PaymentNotification;
-use App\Models\GeneratedTicket; // <--- Importamos el nuevo modelo
+use App\Models\GeneratedTicket; 
 use Livewire\WithPagination;
-use Carbon\Carbon; // Para diffForHumans
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TicketsEmail;
+use App\Models\ExchangeRate;
 
 class TicketsList extends Component
 {
     use WithPagination;
 
     public $search = '';
-    public $filterConfirmed = 'false'; // 'true', 'false', 'all'
-    public $notificationId; // Para almacenar el ID de la notificación a confirmar
+    public $filterConfirmed = 'all'; 
+    public $notificationId; 
     public $showConfirmModal = false;
+    public $showTicketsModal = false;
 
-    // Propiedades para los datos de la notificación en el modal (si los necesitas allí)
+    public $selectedNotification = null;
+
     public $modalNotificationName;
     public $modalNotificationAmount;
-    public $modalNotificationTicketsCount; // Asegúrate de que esta propiedad esté aquí
+    public $modalNotificationTicketsCount; 
 
-    // Método para abrir el modal de confirmación
+    public $showExchangeRateModal = false;
+    public $exchangeRate = 0;
+
+    public $mostTicketsUser = null;
+
+    public $winningNumbers = ['1234', '5555', '2313', '7890', '3333'];
+
+    public function mount()
+    {
+        
+        $rate = ExchangeRate::latest()->first();
+        $this->exchangeRate = $rate ? $rate->rate : 38.00; 
+    }
+
+    public function closeMostTicketsUser()
+    {
+        $this->mostTicketsUser = null;
+    }
+
+    public function findUserWithMostTickets()
+    {
+        $topUser = GeneratedTicket::select('cedula')
+            ->selectRaw('count(*) as total_tickets')
+            ->groupBy('cedula')
+            ->orderByDesc('total_tickets')
+            ->first();
+
+        if ($topUser) {
+            $this->mostTicketsUser = [
+                'cedula' => $topUser->cedula,
+                'total_tickets' => $topUser->total_tickets,
+            ];
+        } else {
+            $this->mostTicketsUser = null;
+        }
+    }
+
     public function openConfirmModal($id)
     {
         $this->notificationId = $id;
@@ -30,8 +71,7 @@ class TicketsList extends Component
         if ($notification) {
             $this->modalNotificationName = $notification->name;
             $this->modalNotificationAmount = $notification->amount;
-            $this->modalNotificationTicketsCount = $notification->number_of_tickets; // Asigna la cantidad de tickets
-
+            $this->modalNotificationTicketsCount = $notification->number_of_tickets;
             $this->showConfirmModal = true;
         } else {
             session()->flash('error', 'Notificación no encontrada.');
@@ -42,6 +82,50 @@ class TicketsList extends Component
     {
         $this->showConfirmModal = false;
         $this->reset(['notificationId', 'modalNotificationName', 'modalNotificationAmount', 'modalNotificationTicketsCount']);
+    }
+
+    public function openTicketsModal($id)
+    {
+        $this->selectedNotification = PaymentNotification::find($id);
+        if ($this->selectedNotification) {
+            $this->showTicketsModal = true;
+        } else {
+            session()->flash('error', 'Notificación no encontrada.');
+        }
+    }
+
+    public function closeTicketsModal()
+    {
+        $this->showTicketsModal = false;
+        $this->selectedNotification = null;
+    }
+
+    public function openExchangeRateModal()
+    {
+        $this->showExchangeRateModal = true;
+    }
+
+    public function closeExchangeRateModal()
+    {
+        $this->showExchangeRateModal = false;
+    }
+
+    public function saveExchangeRate()
+    {
+        $this->validate([
+            'exchangeRate' => 'required|numeric|gt:0',
+        ]);
+
+        $rate = ExchangeRate::latest()->first();
+        if ($rate) {
+            $rate->update(['rate' => $this->exchangeRate]);
+        } else {
+            ExchangeRate::create(['rate' => $this->exchangeRate]);
+        }
+
+        session()->flash('message', 'Tasa de cambio actualizada con éxito.');
+        $this->closeExchangeRateModal();
+        $this->dispatch('exchangeRateUpdated', $this->exchangeRate); 
     }
 
     public function confirmPayment()
@@ -64,72 +148,89 @@ class TicketsList extends Component
             return;
         }
 
-        // --- LÓGICA DE GENERACIÓN Y ALMACENAMIENTO DE TICKETS ---
+        $hasWinner = false;
+
         try {
-            // Obtenemos la cantidad de tickets a generar de la BD
             $numberOfTicketsToGenerate = $notification->number_of_tickets;
-
-            // dd($numberOfTicketsToGenerate); // Para depuración: verificar cuántos tickets se deben generar
-
             $generatedTicketsArray = $this->generateUniqueTicketNumbers($numberOfTicketsToGenerate);
 
-            // dd($generatedTicketsArray); // Para depuración: verificar los tickets generados
-
-            // Guardar cada ticket en la nueva tabla `generated_tickets`
             foreach ($generatedTicketsArray as $ticketNumber) {
                 GeneratedTicket::create([
                     'payment_notification_id' => $notification->id,
-                    'cedula' => $notification->cedula, // Usamos la cédula de la notificación de pago
+                    'cedula' => $notification->cedula, 
                     'ticket_number' => $ticketNumber,
                 ]);
             }
 
-            // Actualizar la notificación de pago
             $notification->is_confirmed = true;
             $notification->confirmed_at = now();
-            // Almacenar el array de tickets generados como JSON en la columna 'tickets'
             $notification->tickets = json_encode($generatedTicketsArray);
+            $notification->has_winning_ticket = $hasWinner;
             $notification->save();
 
             session()->flash('message', 'Pago confirmado y tickets generados con éxito!');
         } catch (\Exception $e) {
             session()->flash('error', 'Error al confirmar el pago o generar tickets: ' . $e->getMessage());
-            // Opcional: Loguear el error para depuración
-            // \Log::error('Error generating tickets: ' . $e->getMessage() . ' for notification ID: ' . $this->notificationId);
         }
 
         $this->closeConfirmModal();
-        $this->resetPage(); // Resetear paginación si es necesario
+        $this->resetPage(); 
+        $this->dispatch('refresh-tickets');
     }
 
-    /**
-     * Genera un array de números de tickets únicos.
-     * Basado en la cantidad confirmada.
-     */
-    private function generateUniqueTicketNumbers($count)
+    public function sendTicketsEmail($notificationId)
     {
-        $tickets = [];
-        $maxAttempts = $count * 5; // Limita los intentos para evitar bucles infinitos en caso de números insuficientes
-        $attempts = 0;
+        $notification = PaymentNotification::find($notificationId);
 
-        while (count($tickets) < $count && $attempts < $maxAttempts) {
-            $randomNumber = rand(0, 9999); // Genera un número del 1 al 10.000
-            $ticket = str_pad($randomNumber, 4, '0', STR_PAD_LEFT); // Rellena con ceros a la izquierda hasta 5 dígitos (ej: 00042)
-
-            // Verifica si el ticket ya existe en la base de datos para evitar duplicados globales
-            if (!GeneratedTicket::where('ticket_number', $ticket)->exists()) {
-                $tickets[] = $ticket; // Añade a nuestro array temporal
-            }
-            $attempts++;
+        if (!$notification || !$notification->is_confirmed) {
+            session()->flash('error', 'Notificación no encontrada o no confirmada.');
+            return;
         }
 
-        // Si después de muchos intentos no se pudo generar la cantidad deseada (poco probable con 10k números)
-        if (count($tickets) < $count) {
-            session()->flash('warning', 'No se pudieron generar todos los tickets únicos solicitados. Se generaron ' . count($tickets) . ' de ' . $count . '.');
+        if (!$notification->tickets) {
+            session()->flash('warning', 'No hay tickets asignados a esta notificación para enviar por correo.');
+            return;
         }
 
-        return array_unique($tickets); // Asegura unicidad en el array devuelto, aunque ya lo chequeamos con `exists()`
+        try {
+            $decodedTickets = json_decode($notification->tickets, true);
+            
+            Mail::to($notification->email)->send(new TicketsEmail(
+                $notification->name, 
+                $decodedTickets
+            ));
+
+            session()->flash('message', '¡Correo de tickets enviado con éxito!');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Hubo un error al enviar el correo: ' . $e->getMessage());
+        }
     }
+
+    private function generateUniqueTicketNumbers($count)
+{
+    $existingTickets = GeneratedTicket::pluck('ticket_number')->toArray();
+
+    $allPossibleTickets = range(0, 9999);
+    $allPossibleTickets = array_map(function($n) {
+        return str_pad($n, 4, '0', STR_PAD_LEFT);
+    }, $allPossibleTickets);
+
+    $availableTickets = array_diff($allPossibleTickets, $existingTickets);
+    
+    $availableTickets = array_values($availableTickets);
+
+    shuffle($availableTickets);
+
+    if (count($availableTickets) < $count) {
+        $ticketsToReturn = array_slice($availableTickets, 0, count($availableTickets));
+        session()->flash('warning', 'Solo se pudieron generar ' . count($ticketsToReturn) . ' de ' . $count . ' tickets solicitados debido a la falta de números únicos disponibles.');
+        return $ticketsToReturn;
+    }
+
+    $newTickets = array_slice($availableTickets, 0, $count);
+
+    return $newTickets;
+}
 
     public function sendWhatsApp($notificationId)
     {
@@ -160,7 +261,8 @@ class TicketsList extends Component
                 $query->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('cedula', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%')
-                    ->orWhere('reference_number', 'like', '%' . $this->search . '%');
+                    ->orWhere('reference_number', 'like', '%' . $this->search . '%')
+                    ->orWhere('tickets', 'like', '%' . $this->search . '%');
             })
             ->when($this->filterConfirmed !== 'all', function ($query) {
                 $query->where('is_confirmed', $this->filterConfirmed === 'true');

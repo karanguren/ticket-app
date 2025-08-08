@@ -22,6 +22,8 @@ class ConfirmPaymentModal extends Component
     public $totalAmount;
     public $numberOfTickets;
 
+    public $paymentSubmitted = false;
+
 
     protected $listeners = [
         'open-confirm-payment-modal' => 'openModal',
@@ -32,6 +34,7 @@ class ConfirmPaymentModal extends Component
     {
         $this->showModal = true;
         $this->resetForm();
+        $this->paymentSubmitted = false;
 
         if ($amount !== null) {
             $this->totalAmount = $amount;
@@ -45,11 +48,7 @@ class ConfirmPaymentModal extends Component
     {
         $this->showModal = false;
         $this->resetForm();
-    }
-
-    public function updateTotalAmount($amount)
-    {
-        $this->totalAmount = $amount;
+        $this->paymentSubmitted = false;
     }
 
     public function confirmPayment()
@@ -59,8 +58,8 @@ class ConfirmPaymentModal extends Component
             'cedula' => 'required|string|max:20',
             'phone' => 'required|string|max:20',
             'email' => 'required|email|max:255',
-            'ref' => 'required|string|max:4', // Asumiendo que 'ref' son los últimos 4 dígitos
-            'image' => 'required|image|max:10240', // Max 10MB
+            'ref' => 'required|string|max:4',
+            'image' => 'required|image|max:10240',
         ]);
 
         $imagePath = null;
@@ -70,7 +69,7 @@ class ConfirmPaymentModal extends Component
 
         try {
             PaymentNotification::create([
-                'name' => $this->name,
+                'name' => $this->name,  
                 'cedula' => $this->cedula,
                 'phone' => $this->phone,
                 'email' => $this->email,
@@ -81,8 +80,10 @@ class ConfirmPaymentModal extends Component
                 'number_of_tickets' => $this->numberOfTickets,
             ]);
 
+            $this->dispatch('paymentConfirmationSuccess');
+
+            $this->paymentSubmitted = true;
             session()->flash('message', '¡Tu notificación de pago ha sido enviada con éxito!');
-            // $this->closeModal(); 
 
         } catch (\Exception $e) {
             
