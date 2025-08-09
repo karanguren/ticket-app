@@ -33,8 +33,8 @@ class PaymentMethods extends Component
         $this->totalAmountInDollars = $newTotalDollars;
         $this->numberOfTicketsForConfirmation = $newNumberOfTickets; 
 
-        if ($this->showPaymentInfo && $this->activeButton) {
-            $this->paymentContent = $this->generatePaymentHtml($this->activeButton);
+        if ($this->showPaymentInfo && $this->paymentTitle) {
+            $this->paymentContent = $this->generatePaymentHtml($this->paymentTitle);
         }
     }
 
@@ -124,7 +124,7 @@ class PaymentMethods extends Component
     
     public function openConfirmPaymentModalButton()
     {
-        $this->dispatch('open-confirm-payment-modal', (float) $this->totalAmount, $this->numberOfTicketsForConfirmation);
+        $this->dispatch('open-confirm-payment-modal', (float) $this->totalAmount, $this->numberOfTicketsForConfirmation, $this->paymentTitle);
     }
 
     public function render()

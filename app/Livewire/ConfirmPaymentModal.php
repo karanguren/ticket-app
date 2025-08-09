@@ -6,6 +6,10 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\PaymentNotification;
 
+use App\Mail\PaymentConfirmationEmail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+
 class ConfirmPaymentModal extends Component
 {
     use WithFileUploads;
@@ -18,7 +22,7 @@ class ConfirmPaymentModal extends Component
     public $email;
     public $ref;
     public $image;
-
+    public $paymentMethod; 
     public $totalAmount;
     public $numberOfTickets;
 
@@ -30,7 +34,7 @@ class ConfirmPaymentModal extends Component
         'updateConfirmPaymentTotal' => 'updateTotalAmount',
     ];
 
-    public function openModal($amount = null, $ticketsCount = null)
+    public function openModal($amount = null, $ticketsCount = null, $paymentTitle = null)
     {
         $this->showModal = true;
         $this->resetForm();
@@ -41,6 +45,9 @@ class ConfirmPaymentModal extends Component
         }
         if ($ticketsCount !== null) {
             $this->numberOfTickets = $ticketsCount;
+        }
+        if ($paymentTitle !== null) {
+            $this->paymentMethod = $paymentTitle;
         }
     }
 
@@ -67,7 +74,23 @@ class ConfirmPaymentModal extends Component
             $imagePath = $this->image->store('payment-captures', 'public');
         }
 
+        $data = [
+            'name' => $this->name,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'reference' => $this->ref,
+            'numberOfTickets' => $this->numberOfTickets,
+            'totalAmount' => (float) $this->totalAmount,
+            'purchaseDate' => now()->format('d-m-Y'),
+            'purchaseTime' => now()->format('H:i:s A'),
+            'receiptImageUrl' => asset('storage/' . $imagePath),
+            'paymentMethod' => $this->paymentMethod,
+        ];
+
+
+
         try {
+
             PaymentNotification::create([
                 'name' => $this->name,  
                 'cedula' => $this->cedula,
@@ -78,14 +101,21 @@ class ConfirmPaymentModal extends Component
                 'amount' => (float) $this->totalAmount,
                 'is_confirmed' => false, 
                 'number_of_tickets' => $this->numberOfTickets,
+                'payment_method' => $this->paymentMethod,
             ]);
 
             $this->dispatch('paymentConfirmationSuccess');
+
+        
+
+            Mail::to($data['email'])->send(new PaymentConfirmationEmail($data));
 
             $this->paymentSubmitted = true;
             session()->flash('message', '¡Tu notificación de pago ha sido enviada con éxito!');
 
         } catch (\Exception $e) {
+
+            Storage::disk('public')->delete($imagePath);
             
             session()->flash('error', 'Hubo un error al enviar tu notificación de pago: ' . $e->getMessage());
         }
