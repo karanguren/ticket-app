@@ -60,7 +60,7 @@
                                     wire:model="phone"
                                     type="tel"
                                     mask="(9999)999-9999"
-                                    placeholder="Teléfono"
+                                    placeholder="(9999)999-9999"
                                     required
                                     class="mb-4"
                                 />
@@ -77,12 +77,12 @@
                                 />
                                 @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
-                                <flux:label class="text-gray-700">Nro. de Referencia (ultimos 4)</flux:label>
+                                <flux:label class="text-gray-700">Nro. de Referencia (último 4)</flux:label>
                                 <flux:input
                                     wire:model="ref"
                                     type="text"
                                     required
-                                    placeholder="Nro. de Referencia"
+                                    placeholder="Solo los últimos 4 digitos"
                                     class="mb-4"
                                 />
                                 @error('ref') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
