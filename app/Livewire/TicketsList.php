@@ -250,7 +250,9 @@ class TicketsList extends Component
         $ticketsString = implode(', ', $decodedTickets);
         $userName = $notification->name;
 
-        $whatsappUrl = "https://api.whatsapp.com/send?phone=584164162492&text=%C2%A1Hola%20%F0%9F%91%8B%20*{$userName}*!%20%F0%9F%8E%89%0A%0ATu%20pago%20ha%20sido%20confirmado%2C%20estos%20son%20tus%20tickets%3A%0A%0A{$ticketsString}.%20%0A%0A%C2%A1Mucha%20suerte!%20%F0%9F%A4%9E%F0%9F%8D%80";
+        $userPhone = preg_replace('/[^0-9]/', '', $notification->phone);
+
+        $whatsappUrl = "https://api.whatsapp.com/send?phone=+58{$userPhone}&text=%C2%A1Hola%20%F0%9F%91%8B%20*{$userName}*!%20%F0%9F%8E%89%0A%0ATu%20pago%20ha%20sido%20confirmado%2C%20estos%20son%20tus%20tickets%3A%0A%0A{$ticketsString}.%20%0A%0A%C2%A1Mucha%20suerte!%20%F0%9F%A4%9E%F0%9F%8D%80";
         $this->js("window.open('{$whatsappUrl}', '_blank')");
     }
 
