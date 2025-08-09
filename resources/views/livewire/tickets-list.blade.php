@@ -139,9 +139,13 @@
                                 @endif
                             </td>
                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                @if ($notification->payment_proof_path)
-                                    <a href="{{ Storage::url($notification->payment_proof_path) }}" target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold">
-                                        Ver Imagen
+                                @if ($notification->capture_path)
+                                    <a href="{{ Storage::url($notification->capture_path) }}" target="_blank">
+                                        <img 
+                                            src="{{ Storage::url($notification->capture_path) }}" 
+                                            alt="Comprobante de Pago" 
+                                            class="w-16 h-16 object-cover rounded-md"
+                                        >
                                     </a>
                                 @else
                                     <span class="text-gray-500">No hay imagen</span>
