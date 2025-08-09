@@ -22,7 +22,7 @@
                 <h3 style="font-size: 18px; color: #333333; margin-top: 0; margin-bottom: 15px;">Aquí están tus números:</h3>
                 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
                     @foreach ($tickets as $ticket)
-                        <span style="font-size: 18px; font-weight: bold; padding: 10px 15px; background-color: #ef4848; color: #ffffff; border-radius: 8px;">
+                        <span style="font-size: 18px; font-weight: bold; padding: 10px 15px; background-color: #ef4848; color: #ffffff; border-radius: 8px; margin-right: 10px;">
                             {{ $ticket }}
                         </span>
                     @endforeach

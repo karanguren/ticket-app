@@ -16,6 +16,8 @@ class TicketsEmail extends Mailable
     
     public $clientName;
     public $tickets;
+    public $logoUrl;
+    public $instagramUrl;
     
 
     /**
