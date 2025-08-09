@@ -4,7 +4,9 @@
         <div class="relative p-5 border max-w-lg w-full shadow-lg rounded-md bg-white">
             <div class="mt-3">
                 <div class="flex justify-between items-center mb-2"> 
-                    <h3 class="text-2xl text-[#ef4848] font-bold leading-6">Notifica tu pago</h3>
+                    <div class="flex-grow text-center mr-[-24px]">
+                        <h3 class="text-2xl text-[#ef4848] font-bold leading-6">Notifica tu pago</h3>
+                    </div>
                     
                     <button wire:click="closeModal" type="button" class="text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

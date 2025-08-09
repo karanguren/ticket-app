@@ -7,14 +7,18 @@ use App\Models\ExchangeRate;
 
 class BuyTickets extends Component
 {
-    public $ticketQuantity = 0;
+    public $ticketQuantity = null;
     public $ticketPrice = 75.00;
     public $totalAmount = '0.00';
     public $totalAmountInDollars = '0.00';
     public $exchangeRate;
     
+    protected $rules = [
+        'ticketQuantity' => 'required|integer|min:2',
+    ];
+
     protected $listeners = ['exchangeRateUpdated', 'paymentConfirmationSuccess' => 'resetTicketSelection'];
-    
+
     public function mount()
     {
         $rate = ExchangeRate::latest()->first();
@@ -27,13 +31,8 @@ class BuyTickets extends Component
 
     public function updatedTicketQuantity($value)
     {
-        $cleanValue = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
-        $cleanValue = (int) $cleanValue;
-
-        if ($cleanValue < 2 && $cleanValue !== 0) {
-            $this->ticketQuantity = 2;
-        } else {
-            $this->ticketQuantity = $cleanValue;
+        if (!is_null($this->ticketQuantity)) {
+            $this->validateOnly('ticketQuantity');
         }
 
         $this->updateTotalAmount();
@@ -48,6 +47,7 @@ class BuyTickets extends Component
     public function updateTotalAmount()
     {
         $subtotalBs = ($this->ticketQuantity >= 2) ? ($this->ticketQuantity * $this->ticketPrice) : 0;
+
         $this->totalAmount = number_format($subtotalBs, 2, '.', '');
         
         if ($this->exchangeRate > 0) {
@@ -68,7 +68,7 @@ class BuyTickets extends Component
 
     public function resetTicketSelection()
     {
-        $this->ticketQuantity = 0; 
+        $this->ticketQuantity = null; 
         $this->updateTotalAmount();
     }
 
