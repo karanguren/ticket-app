@@ -10,18 +10,22 @@
             </label>
         </div>
         <div class="md:w-2/3">
-            <input
-                max="100"
-                wire:model.live="ticketQuantity"
-                class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-red-500"
-                id="tickets"
-                type="number"
-            >
+            <div class="flex items-center">
+                <input
+                    wire:model.live.debounce.300ms="ticketQuantity"
+                    class="bg-[#2d2c33] appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-white leading-tight focus:outline-none focus:bg-[#2d2c33] focus:border-red-500"
+                    id="tickets"
+                    type="number"
+                >
+                @error('ticketQuantity')
+                    <strong class="text-white text-sm ml-2">Minimo 2 tickets</strong>
+                @enderror
+            </div>
         </div>
     </div>
     <p class="text-white mt-2 mb-2 text-[13px] w-full text-center px-10">
         Seleccione la cantidad de números a comprar. Utiliza los botones para seleccionar de forma más rápida una
-        cantidad mayor de tickets a comprar. <strong>Mínimo 2 Tickets por compra</strong>
+        cantidad mayor de tickets a comprar.
     </p>
 
     <div class="flex flex-wrap justify-center w-full gap-4 mb-4">
