@@ -33,8 +33,8 @@ class PaymentMethods extends Component
         $this->totalAmountInDollars = $newTotalDollars;
         $this->numberOfTicketsForConfirmation = $newNumberOfTickets; 
 
-        if ($this->showPaymentInfo && $this->paymentTitle) {
-            $this->paymentContent = $this->generatePaymentHtml($this->paymentTitle);
+        if ($this->showPaymentInfo && $this->activeButton) {
+            $this->paymentContent = $this->generatePaymentHtml($this->activeButton);
         }
     }
 
