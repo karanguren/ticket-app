@@ -1,7 +1,7 @@
 <div>
     <div id="confirmPaymentModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 {{ $showModal ? 'flex' : 'hidden' }}">
         <div class="fixed inset-0 bg-black opacity-50" wire:click="closeModal"></div>
-        <div class="relative p-5 border max-w-lg w-full shadow-lg rounded-md bg-white">
+        <div class="relative p-5 border max-w-lg w-full shadow-lg rounded-md bg-white max-h-[80vh] sm:max-h-full overflow-y-auto">
             <div class="mt-3">
                 <div class="flex justify-between items-center mb-2"> 
                     <div class="flex-grow text-center mr-[-24px]">
