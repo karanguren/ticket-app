@@ -31,7 +31,7 @@
                     <div class="detail-item"><strong>Hora de la compra:</strong> {{ $purchaseTime }}</div>
                     <div class="image-container">
                         <strong>Comprobante de Pago:</strong><br>
-                        <img src="{{ $receiptImageUrl }}" alt="Comprobante de Pago" style="margin-top: 10px;">
+                        <img src="{{ $receiptImageUrl }}" alt="Comprobante de Pago" style="margin-top: 10px; max-width: 150px; height: auto;">
                     </div>
             </div>
 
