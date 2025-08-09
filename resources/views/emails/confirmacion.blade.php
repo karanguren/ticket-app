@@ -44,7 +44,7 @@
             </p>
 
             <div style="margin: 30px 0;">
-                <a href="https://api.whatsapp.com/send?phone=584143669987&text=%C2%A1Hola!%20%F0%9F%91%8B%0A%0ATengo%20una%20consulta..." target="_blank" style="display: inline-block; padding: 12px 24px; font-size: 16px; font-weight: bold; color: #ffffff; background-color: #25d366; text-decoration: none; border-radius: 6px;">
+                <a href="https://api.whatsapp.com/send?phone=584143669987&text=%C2%A1Hola!%20%F0%9F%91%8B%0A%0ATengo%20una%20consulta%20sobre%20la%20rifa..." target="_blank" style="display: inline-block; padding: 12px 24px; font-size: 16px; font-weight: bold; color: #ffffff; background-color: #25d366; text-decoration: none; border-radius: 6px;">
                     WhatsApp
                 </a>
             </div>

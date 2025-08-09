@@ -106,7 +106,7 @@
                     <flux:callout.heading>IMPORTANTE</flux:callout.heading>
                     <flux:callout.text>Si en 24 horas no te llegan tus Números al correo, por favor escribe a Soporte no antes.</flux:callout.text>
                     <x-slot name="actions" class="@md:h-full m-0!">
-                        <flux:button class="bg-red-600 hover:bg-red-700 text-white" target="_blank" href="https://api.whatsapp.com/send?phone=584143669987&text=%C2%A1Hola!%20%F0%9F%91%8B%0A%0ATengo%20una%20consulta..."><img src="{{asset('images/whatsappN.png')}}" class="w-[20px] mr-4"> CONTACTANOS -></flux:button>
+                        <flux:button class="bg-red-600 hover:bg-red-700 text-white" target="_blank" href="https://api.whatsapp.com/send?phone=584143669987&text=%C2%A1Hola!%20%F0%9F%91%8B%0A%0ATengo%20una%20consulta%20sobre%20la%20rifa..."><img src="{{asset('images/whatsappN.png')}}" class="w-[20px] mr-4"> CONTACTANOS -></flux:button>
                     </x-slot>
                 </flux:callout>
             </div>
