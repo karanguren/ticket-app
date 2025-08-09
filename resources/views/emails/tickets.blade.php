@@ -6,27 +6,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tickets de Rifas Los Hermanos</title>
 </head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; background-color: #f7fafc; padding: 20px 0;">
-    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+<body style="font-family: Arial, sans-serif; background-color: #f7fafc; padding: 20px 0; margin: 0;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px;">
         <div style="text-align: center; padding: 20px;">
             <img src="{{ $logoUrl }}" alt="Rifas Los Hermanos" style="max-width: 350px; height: auto;">
         </div>
 
         <div style="padding: 20px 40px; text-align: center;">
             <h1 style="font-size: 24px; color: #333333; margin-top: 0;">¡Hola, {{ $clientName }}! 👋</h1>
-            <p style="font-size: 16px; color: #555555; line-height: 1.5;">
-                Gracias por participar y comprar con **Rifas Los Hermanos**. ¡Tu pago ha sido confirmado!
+            <p style="font-size: 16px; color: #555555; line-height: 1.5; margin: 0;">
+                Gracias por participar y comprar con <strong>Rifas Los Hermanos</strong>. ¡Tu pago ha sido confirmado!
             </p>
 
             <div style="background-color: #f0f4f8; border-radius: 8px; padding: 20px; margin-top: 20px;">
-                <h3 style="font-size: 18px; color: #333333; margin-top: 0; margin-bottom: 15px;">Aquí están tus números:</h3>
-                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
-                    @foreach ($tickets as $ticket)
-                        <span style="font-size: 18px; font-weight: bold; padding: 10px 15px; background-color: #ef4848; color: #ffffff; border-radius: 8px; margin-right: 10px;">
-                            {{ $ticket }}
-                        </span>
-                    @endforeach
-                </div>
+                <h3 style="font-size: 18px; color: #333333; margin: 0 0 15px;">Aquí están tus números:</h3>
+
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: 0 auto;">
+                    <tr>
+                        @foreach ($tickets as $i => $ticket)
+                            <td align="center" style="padding: 6px;">
+                                <div style="font-size: 16px; font-weight: bold; padding: 10px 15px; background-color: #ef4848; color: #ffffff; border-radius: 8px; display: inline-block;">
+                                    {{ $ticket }}
+                                </div>
+                            </td>
+                            @if(($i + 1) % 5 === 0)
+                                </tr><tr>
+                            @endif
+                        @endforeach
+                    </tr>
+                </table>
             </div>
 
             <p style="font-size: 16px; color: #555555; line-height: 1.5; margin-top: 20px;">
@@ -34,7 +42,7 @@
             </p>
             
             <p style="font-size: 16px; color: #555555; line-height: 1.5; margin-top: 20px;">
-                Para cualquier consulta o asistencia adicional que necesite, puede comunicarse con nuestro equipo a traves de
+                Para cualquier consulta o asistencia adicional, puede comunicarse con nuestro equipo a través de:
             </p>
 
             <div style="margin: 30px 0;">
@@ -45,7 +53,9 @@
         </div>
 
         <div style="text-align: center; padding: 20px 40px; border-top: 1px solid #e2e8f0; margin-top: 20px;">
-            <p style="font-size: 14px; color: #777777; margin-bottom: 10px;">Atentamente, <a href="https://hermanosrifas.com" target="_blank">hermanosrifas.com</a></p>
+            <p style="font-size: 14px; color: #777777; margin-bottom: 10px;">
+                Atentamente, <a href="https://hermanosrifas.com" target="_blank" style="color: #777777; text-decoration: none;">hermanosrifas.com</a>
+            </p>
             <p style="font-size: 14px; color: #777777; margin-bottom: 10px;">¡Gracias por confiar en nosotros!</p>
 
             <div style="margin-top: 20px;">
