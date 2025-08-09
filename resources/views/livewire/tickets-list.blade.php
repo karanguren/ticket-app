@@ -115,9 +115,7 @@
                                 @endphp
                                 {{ $currencySymbol }} {{ number_format($notification->amount, 2, ',', '.') }}
                             </td>
-                            {{-- Si tienes el método de pago en PaymentNotification, muestra esto: --}}
-                            {{-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification->payment_method ?? 'N/A' }}</td> --}}
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">N/A</td> {{-- Temporalmente N/A si no está en la BD --}}
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification->payment_method ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 @if ($notification->is_confirmed && !empty($notification->tickets))
                                     <button

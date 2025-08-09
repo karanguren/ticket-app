@@ -27,8 +27,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/pp', function () {
-    return view('emails/tickets');
-})->name('tickets');
+    return view('emails/confirmacion');
+})->name('confirmacion');
 
 Route::get('/kk', function () {
     return view('numeros');

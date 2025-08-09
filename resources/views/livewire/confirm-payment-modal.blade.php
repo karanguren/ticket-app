@@ -100,7 +100,7 @@
                                 @error('image') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
                                 <div class="flex justify-end mt-4">
-                                    <flux:button type="submit" class="cursor-pointer px-6 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50" variant="danger" icon="arrow-up-right" wire:loading.attr="disabled">
+                                    <flux:button type="submit"  class="cursor-pointer px-6 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50" variant="danger" icon="arrow-up-right">
                                         <span wire:loading.remove wire:target="confirmPayment">CONFIRMAR PAGO</span>
                                         <span wire:loading wire:target="confirmPayment">CONFIRMANDO...</span>
                                     </flux:button>
