@@ -9,7 +9,7 @@
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; background-color: #f7fafc; padding: 20px 0;">
     <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
         <div style="text-align: center; padding: 20px;">
-            <img src="{{ asset('images/logo.png') }}" alt="Rifas Los Hermanos" style="max-width: 350px; height: auto;">
+            <img src="{{ $logoUrl }}" alt="Rifas Los Hermanos" style="max-width: 350px; height: auto;">
         </div>
 
         <div style="padding: 20px 40px; text-align: center;">
@@ -51,7 +51,7 @@
             <div style="margin-top: 20px;">
                 <h4 style="font-size: 16px; color: #555555; margin-bottom: 10px;">Síguenos en nuestras redes:</h4>
                 <a href="https://www.instagram.com/rifasloshermanos333" target="_blank" style="margin: 0 8px;">
-                    <img src="{{ asset('images/instagramN.png') }}" alt="Instagram" width="32" height="32" style="display:inline-block; border-radius: 50%;">
+                    <img src="{{ $instagramUrl }}" alt="Instagram" width="32" height="32" style="display:inline-block; border-radius: 50%;">
                 </a>
             </div>
         </div>

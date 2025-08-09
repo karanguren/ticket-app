@@ -16,6 +16,7 @@ class TicketsEmail extends Mailable
     
     public $clientName;
     public $tickets;
+    
 
     /**
      * Create a new message instance.
@@ -24,6 +25,8 @@ class TicketsEmail extends Mailable
     {
         $this->clientName = $clientName;
         $this->tickets = $tickets;
+        $this->logoUrl = asset('images/logo.png');
+        $this->instagramUrl = asset('images/instagramN.png');
     }
 
     /**
