@@ -4,7 +4,7 @@
     <title>Tickets de Rifas los Hermanos</title>
 </head>
 <body>
-    <img style="display: block; margin-left: auto; margin-right: auto; width: 200px; height: auto;" src="{{asset('images/logo.png')}}">
+    <img style="display: block; margin-left: auto; margin-right: auto; width: 200px; height: auto;" src="{{ asset('images/logo.png') }}">
     <div style="margin: auto; width: 600px; padding: 10px;">
         <p style="text-align: justify; margin-left: 20px;">
             <h2 style="text-align: justify; margin-left: 20px;">Hola! {{ $clientName }}</h2>

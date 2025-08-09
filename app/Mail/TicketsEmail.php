@@ -9,10 +9,11 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class TicketsEmail extends Mailable implements ShouldQueue
+class TicketsEmail extends Mailable
 {
     use Queueable, SerializesModels;
-
+    
+    
     public $clientName;
     public $tickets;
 
@@ -31,7 +32,7 @@ class TicketsEmail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Confirmación de Tickets de Rifas los Hermanos',
+            subject: '¡Tus Tickets de Rifas Los Hermanos!',
         );
     }
 
@@ -42,10 +43,6 @@ class TicketsEmail extends Mailable implements ShouldQueue
     {
         return new Content(
             view: 'emails.tickets',
-            with: [
-                'clientName' => $this->clientName,
-                'tickets' => $this->tickets,
-            ],
         );
     }
 
