@@ -59,7 +59,7 @@
                                 <flux:input
                                     wire:model="phone"
                                     type="tel"
-                                    mask="(999)999-9999"
+                                    mask="(9999)999-9999"
                                     placeholder="Teléfono"
                                     required
                                     class="mb-4"
