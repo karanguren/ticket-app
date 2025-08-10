@@ -130,8 +130,12 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $notification->number_of_tickets }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @if ($notification->has_winning_ticket)
-                                    <span class="text-red-600 font-bold">Tiene un número ganador</span>
+                                @if (!empty($notification->winning_tickets_found))
+                                    <div class="text-red-600 font-bold">
+                                        @foreach ($notification->winning_tickets_found as $winningTicket)
+                                            <span class="inline-block bg-red-500 text-white px-2 py-1 rounded mr-1 text-xs">{{ $winningTicket }}</span>
+                                        @endforeach
+                                    </div>
                                 @else
                                     <span class="text-gray-500">No</span>
                                 @endif
