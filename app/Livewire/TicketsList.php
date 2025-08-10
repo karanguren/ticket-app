@@ -207,30 +207,30 @@ class TicketsList extends Component
     }
 
     private function generateUniqueTicketNumbers($count)
-{
-    $existingTickets = GeneratedTicket::pluck('ticket_number')->toArray();
+    {
+        $existingTickets = GeneratedTicket::pluck('ticket_number')->toArray();
 
-    $allPossibleTickets = range(0, 9999);
-    $allPossibleTickets = array_map(function($n) {
-        return str_pad($n, 4, '0', STR_PAD_LEFT);
-    }, $allPossibleTickets);
+        $allPossibleTickets = range(0, 9999);
+        $allPossibleTickets = array_map(function($n) {
+            return str_pad($n, 4, '0', STR_PAD_LEFT);
+        }, $allPossibleTickets);
 
-    $availableTickets = array_diff($allPossibleTickets, $existingTickets);
-    
-    $availableTickets = array_values($availableTickets);
+        $availableTickets = array_diff($allPossibleTickets, $existingTickets);
+        
+        $availableTickets = array_values($availableTickets);
 
-    shuffle($availableTickets);
+        shuffle($availableTickets);
 
-    if (count($availableTickets) < $count) {
-        $ticketsToReturn = array_slice($availableTickets, 0, count($availableTickets));
-        session()->flash('warning', 'Solo se pudieron generar ' . count($ticketsToReturn) . ' de ' . $count . ' tickets solicitados debido a la falta de números únicos disponibles.');
-        return $ticketsToReturn;
+        if (count($availableTickets) < $count) {
+            $ticketsToReturn = array_slice($availableTickets, 0, count($availableTickets));
+            session()->flash('warning', 'Solo se pudieron generar ' . count($ticketsToReturn) . ' de ' . $count . ' tickets solicitados debido a la falta de números únicos disponibles.');
+            return $ticketsToReturn;
+        }
+
+        $newTickets = array_slice($availableTickets, 0, $count);
+
+        return $newTickets;
     }
-
-    $newTickets = array_slice($availableTickets, 0, $count);
-
-    return $newTickets;
-}
 
     public function sendWhatsApp($notificationId)
     {
@@ -263,7 +263,6 @@ class TicketsList extends Component
                 $query->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('cedula', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%')
-                    ->orWhere('reference_number', 'like', '%' . $this->search . '%')
                     ->orWhere('tickets', 'like', '%' . $this->search . '%');
             })
             ->when($this->filterConfirmed !== 'all', function ($query) {
@@ -271,6 +270,28 @@ class TicketsList extends Component
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
+
+
+        $notifications->getCollection()->transform(function ($notification) {
+            if ($notification->is_confirmed) {
+                $tickets = GeneratedTicket::where('payment_notification_id', $notification->id)
+                            ->pluck('ticket_number')
+                            ->toArray();
+
+                            
+                            $winningTickets = array_intersect($tickets, $this->winningNumbers);
+                            
+                if (!empty($winningTickets)) {
+                    $notification->winning_tickets_found = $winningTickets;
+                } else {
+                    $notification->winning_tickets_found = [];
+                }
+            } else {
+                $notification->winning_tickets_found = [];
+            }
+
+            return $notification;
+        });
 
         return view('livewire.tickets-list', [
             'notifications' => $notifications,

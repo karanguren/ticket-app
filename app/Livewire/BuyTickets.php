@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\ExchangeRate;
+use App\Models\GeneratedTicket;
 
 class BuyTickets extends Component
 {
@@ -12,6 +13,7 @@ class BuyTickets extends Component
     public $totalAmount = '0.00';
     public $totalAmountInDollars = '0.00';
     public $exchangeRate;
+    public $isRaffleFinished = false;
     
     protected $rules = [
         'ticketQuantity' => 'required|integer|min:2',
@@ -23,10 +25,18 @@ class BuyTickets extends Component
     {
         $rate = ExchangeRate::latest()->first();
         $this->exchangeRate = $rate ? $rate->rate : 38.00;
+
+        $this->checkIfRaffleFinished();
         
         $this->updateTotalAmount();
         $this->dispatch('updatePaymentTotalAmount', (float) $this->totalAmount, (float) $this->totalAmountInDollars, $this->ticketQuantity)->to('payment-methods');
         
+    }
+
+    public function checkIfRaffleFinished()
+    {
+        $soldTicketsCount = GeneratedTicket::count();
+        $this->isRaffleFinished = $soldTicketsCount >= 10000;
     }
 
     public function updatedTicketQuantity($value)
