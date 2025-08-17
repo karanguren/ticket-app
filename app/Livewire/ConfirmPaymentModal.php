@@ -74,21 +74,6 @@ class ConfirmPaymentModal extends Component
             $imagePath = $this->image->store('payment-captures', 'public');
         }
 
-        $data = [
-            'name' => $this->name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'reference' => $this->ref,
-            'numberOfTickets' => $this->numberOfTickets,
-            'totalAmount' => (float) $this->totalAmount,
-            'purchaseDate' => now()->format('d-m-Y'),
-            'purchaseTime' => now()->format('H:i:s A'),
-            'receiptImageUrl' => asset('storage/' . $imagePath),
-            'paymentMethod' => $this->paymentMethod,
-        ];
-
-
-
         try {
 
             PaymentNotification::create([
@@ -106,12 +91,28 @@ class ConfirmPaymentModal extends Component
 
             $this->dispatch('paymentConfirmationSuccess');
 
-        
-
-            Mail::to($data['email'])->send(new PaymentConfirmationEmail($data));
-
             $this->paymentSubmitted = true;
             session()->flash('message', '¡Tu notificación de pago ha sido enviada con éxito!');
+        
+            try {
+                $data = [
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'phone' => $this->phone,
+                    'reference' => $this->ref,
+                    'numberOfTickets' => $this->numberOfTickets,
+                    'totalAmount' => (float) $this->totalAmount,
+                    'purchaseDate' => now()->format('d-m-Y'),
+                    'purchaseTime' => now()->format('H:i:s A'),
+                    'receiptImageUrl' => asset('storage/' . $imagePath),
+                    'paymentMethod' => $this->paymentMethod,
+                ];
+
+                Mail::to($data['email'])->send(new PaymentConfirmationEmail($data));
+            
+            } catch (\Exception $e) {
+                
+            }
 
         } catch (\Exception $e) {
 
