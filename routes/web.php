@@ -6,9 +6,13 @@ use Livewire\Volt\Volt;
 use App\Livewire\TicketsList;
 
 
+// Route::get('/', function () {
+//     return view('welcome');
+// })->name('welcome');
+
 Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+    return view('maintenance');
+})->name('maintenance');
 
 Route::get('/faq', function () {
     return view('faq');
